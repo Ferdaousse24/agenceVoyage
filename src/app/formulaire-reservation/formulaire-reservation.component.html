@@ -1,0 +1,55 @@
+<div class="reservation-form">
+  <div class="container">
+    <h2>DEMANDE DE RÉSERVATION</h2>
+    <form>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="prenom">Prénom *</label>
+          <input type="text" class="form-control" id="prenom" placeholder="Nicolas" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="nom">Nom *</label>
+          <input type="text" class="form-control" id="nom" placeholder="Dupont" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="telephone">Numéro de téléphone *</label>
+          <input type="tel" class="form-control" id="telephone" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="email">Adresse Email *</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="depart">Date de départ *</label>
+          <input type="date" class="form-control" id="depart" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="arrivee">Date d'arrivée *</label>
+          <input type="date" class="form-control" id="arrivee" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="adultes">Nombre d'adultes *</label>
+          <input type="number" class="form-control" id="adultes" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="enfants">Nombre d'enfants</label>
+          <input type="number" class="form-control" id="enfants">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="commentaire">Commentaire *</label>
+        <textarea class="form-control" id="commentaire" rows="3" required></textarea>
+      </div>
+      <div class="reservation-form">
+        <button type="submit" class="btn btn-warning btn-lg">Réservez votre voyage</button>
+      </div>
+      
+    </form>
+  </div>
+</div>
