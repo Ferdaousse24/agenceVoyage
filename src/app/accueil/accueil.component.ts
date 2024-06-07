@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { FormulaireReservationComponent } from '../formulaire-reservation/formulaire-reservation.component';
+import { CommonModule } from '@angular/common';
+import { FiltreRechercheVolsComponent } from '../filtre-recherche-vols/filtre-recherche-vols.component';
 
 @Component({
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.css'],
   standalone: true,
-  imports: [FormulaireReservationComponent]
+  imports: [CommonModule, FiltreRechercheVolsComponent],
 })
 export class AccueilComponent {}

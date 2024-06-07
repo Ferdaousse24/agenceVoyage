@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/agence-voyage",
+    "public": "dist/agence-voyage/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

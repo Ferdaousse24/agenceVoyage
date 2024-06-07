@@ -1,5 +1,5 @@
-<div class="container-fluid p-0">
-  <header class="bg-dark text-white text-center py-3">
+<div class="container">
+  <header class="text-white text-center py-3">
     <div class="container">
       <div class="row">
         <div class="col-md-6 text-md-left">
@@ -19,17 +19,13 @@
         </div>
       </div>
     </div>
+    <section class="hero-section d-flex align-items-center" style="background-image: url('assets/hero.jpg'); background-size: cover; height: 100vh;">
+      <div class="container text-center text-white">
+        <!-- Insertion du composant de recherche de vols -->
+        <app-filtre-recherche-vols></app-filtre-recherche-vols>
+      </div>
+    </section>
   </header>
 
-  <section class="hero-section d-flex align-items-center" style="background-image: url('assets/hero.jpg'); background-size: cover; height: 100vh;">
-    <div class="container text-center text-white">
-      <h1 class="display-4">Votre agence de proximité</h1>
-      <p class="lead">Prêt à vivre des expériences de voyage uniques et mémorables ? IZYSAFAR est là pour réaliser vos rêves d’évasion en vous offrant un service personnalisé, éthique et de qualité.</p>
-    </div>
-  </section>
-
-  <section class="reservation-form-section">
-    <app-formulaire-reservation></app-formulaire-reservation>
-  </section>
   
 </div>

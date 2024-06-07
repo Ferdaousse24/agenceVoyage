@@ -1,5 +1,5 @@
-.hero-section {
-    background: url('/assets/hero.jpg') no-repeat center center;
+/*.hero-section {
+    background: url('../assets/hero.jpg') no-repeat center center;
     background-size: cover;
     height: 100vh;
     display: flex;
@@ -8,18 +8,88 @@
     text-align: center;
     color: white;
     position: relative;
+  }*/
+  
+  header {
+    width: 100%;
+    box-sizing: border-box;
+    color: white; /* Pour que le texte du header soit lisible */
+    padding: 10px 0;
+    position: relative;
+    background-image: url('../../assets/background.jpg');
+    background-size: cover; /* Ajuste l'image pour couvrir toute la zone */
+    background-repeat: no-repeat; /* Évite la répétition de l'image */
+    background-position: center; /* Centre l'image */
+    height: 100vh; /* Hauteur du header */
+    width: 100%;
+    color: white;
   }
   
-  .reservation-form-section {
+ 
+  /*.reservation-form-section {
     position: absolute;
     top: 20%;
     bottom: 20%;
     left: 50%;
     transform: translateX(-50%);
-    width: 40%; /* Réduit la largeur du formulaire */
+    width: 40%; 
     background-color: rgba(255, 255, 255, 0.9);
     padding: 10px;
     border-radius: 10px;
   }
-  
-  
+
+
+/* Styles pour le formulaire de recherche 
+.search-filter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(255, 193, 7, 0.9); 
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: -30px; 
+  position: relative;
+  z-index: 1;
+}
+
+.search-filter form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.search-filter .form-group {
+  margin: 10px;
+  width: 100%;
+}
+
+.search-filter .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: white; 
+}
+
+.search-filter .form-group input,
+.search-filter .form-group select {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.search-filter .btn {
+  margin-top: 20px;
+  background-color: #FF4081; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-filter .btn:hover {
+  background-color: #E91E63; 
+}
+*/

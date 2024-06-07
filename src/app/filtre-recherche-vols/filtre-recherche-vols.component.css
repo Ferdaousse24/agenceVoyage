@@ -1,0 +1,82 @@
+.search-filter {
+  background-color: #51778396;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: auto;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-group {
+  flex: 1;
+  margin: 0 10px;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}
+
+.trip-type {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.trip-type label {
+  margin: 0 10px;
+}
+
+.btn-primary {
+  background-color: #ff3366;
+  border-color: #ff3366;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #e62957;
+  border-color: #e62957;
+}
+
+.btn-secondary {
+  background-color: #cccccc;
+  border-color: #cccccc;
+  color: black;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.btn-secondary:hover {
+  background-color: #bbbbbb;
+  border-color: #bbbbbb;
+}
+
+.reduce-btn {
+  margin-left: auto;
+}
+
+.fas {
+  margin-right: 5px;
+}
