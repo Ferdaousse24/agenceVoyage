@@ -1,0 +1,34 @@
+.partners-section {
+  text-align: center;
+  padding: 2% 5%;
+}
+
+.partners-section p {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.carousel-item img {
+  max-height: 150px;
+  object-fit: contain;
+  width: 100%;
+}
+
+.carousel-item .row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item .col {
+  flex: 1;
+  padding: 0 15px;
+}
+
+.custom-prev .carousel-control-prev-icon,
+.custom-next .carousel-control-next-icon {
+  background-color: rgba(37, 65, 64, 0.897); /* Changez cette couleur pour celle que vous souhaitez */
+  border-radius: 50%; /* Pour rendre les icônes rondes */
+  width: 30px;
+  height: 30px;
+}
