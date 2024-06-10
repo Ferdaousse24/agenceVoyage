@@ -1,0 +1,40 @@
+.reservation-form {
+    background-color: #FFC107; /* Same as the button color */
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .reservation-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .reservation-form .form-control {
+    margin-bottom: 10px;
+  }
+  
+  .reservation-form button {
+    background-color: #ff5722; /* Changez cette valeur pour la couleur souhaitée */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .reservation-form button:hover {
+    background-color: #e64a19; /* Couleur du bouton au survol */
+  }
+  
+  .reservation-form-section {
+    margin-top: 100px; /* Ajustez cette valeur selon vos besoins */
+    position: relative;
+    width: 50%; /* Assurez-vous que la largeur correspond à vos besoins */
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
