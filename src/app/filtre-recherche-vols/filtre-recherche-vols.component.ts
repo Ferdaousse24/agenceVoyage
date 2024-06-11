@@ -32,6 +32,8 @@ export class FiltreRechercheVolsComponent {
   returnDate: string = '';
   adults: number = 1;
   children: number = 0;
+  
+  today: string = new Date().toISOString().split('T')[0];
 
   onDestinationChange() {
     this.showAdditionalFields = !!this.destination;
