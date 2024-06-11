@@ -11,7 +11,7 @@
       <div class="form-group">
         <label for="destination">Vers</label>
         <select id="destination" class="form-control" [(ngModel)]="destination" name="destination" (change)="onDestinationChange()" required>
-          <option *ngFor="let city of cities" [value]="city.code">{{ city.name }}</option>
+          <option *ngFor="let city of getFilteredCities()" [value]="city.code">{{ city.name }}</option>
         </select>
       </div>
 
@@ -36,7 +36,7 @@
 
         <div class="form-group">
           <label for="returnDate">Date d'arrivée *</label>
-          <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [disabled]="tripType === 'one-way'" [min]="today" required>
+          <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [disabled]="tripType === 'one-way'" [min]="departureDate" required>
         </div>
 
         <div class="form-group">
@@ -58,4 +58,5 @@
       <button type="submit" class="btn btn-primary" [disabled]="!flightForm.valid">Réserver maintenant</button>
     </div>
   </form>
+  <p id="flight-details" #flightDetails></p>
 </div>

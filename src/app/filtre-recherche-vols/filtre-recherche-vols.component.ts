@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-filtre-recherche-vols',
@@ -10,17 +10,21 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./filtre-recherche-vols.component.css']
 })
 export class FiltreRechercheVolsComponent {
+  @ViewChild('flightDetails') flightDetails!: ElementRef;
+  @ViewChild('flightForm') flightForm!: NgForm;
+
   cities = [
-    { code: 'NYC', name: 'New York' },
-    { code: 'PAR', name: 'Paris' },
-    { code: 'LON', name: 'London' },
-    { code: 'BER', name: 'Berlin' },
-    { code: 'TOK', name: 'Tokyo' },
-    { code: 'SYD', name: 'Sydney' },
-    { code: 'ROM', name: 'Rome' },
-    { code: 'AMS', name: 'Amsterdam' },
-    { code: 'BCN', name: 'Barcelona' },
-    { code: 'MEX', name: 'Mexico City' }
+    { code: 'GVA', name: 'Geneve, Suisse' },
+    { code: 'ZRH', name: 'Zurich, Suisse' },
+    { code: 'LYS', name: 'Lyon, France' },
+    { code: 'MRS', name: 'Marseille, France' },
+    { code: 'PAR', name: 'Paris, France' },
+    { code: 'MLH', name: 'Mulhouse, France' },
+    { code: 'TLS', name: 'Toulouse, France' },
+    { code: 'MPL', name: 'Montpellier, France' },
+    { code: 'NCE', name: 'Nice, France' },
+    { code: 'BOD', name: 'Bordeaux, France' },
+    // Ajoutez toutes les autres villes du fichier CSV de la même manière
   ];
 
   departure = this.cities[0].code;
@@ -34,6 +38,10 @@ export class FiltreRechercheVolsComponent {
   children: number = 0;
   
   today: string = new Date().toISOString().split('T')[0];
+
+  getFilteredCities() {
+    return this.cities.filter(city => city.code !== this.departure);
+  }
 
   onDestinationChange() {
     this.showAdditionalFields = !!this.destination;
@@ -50,6 +58,11 @@ export class FiltreRechercheVolsComponent {
   }
 
   onSubmit() {
+    if (this.tripType === 'round-trip' && this.returnDate <= this.departureDate) {
+      alert('La date de retour doit être supérieure à la date de départ.');
+      return;
+    }
+
     console.log('Recherche de vol :', {
       departure: this.departure,
       destination: this.destination,
@@ -59,5 +72,18 @@ export class FiltreRechercheVolsComponent {
       adults: this.adults,
       children: this.children
     });
+    this.displayFlightDetails();
+  }
+
+  displayFlightDetails() {
+    const details = `
+      Départ: ${this.departure},
+      Destination: ${this.destination},
+      Date de départ: ${this.departureDate},
+      Date de retour: ${this.tripType === 'round-trip' ? this.returnDate : 'N/A'},
+      Nombre d'adultes: ${this.adults},
+      Nombre d'enfants: ${this.children}
+    `;
+    this.flightDetails.nativeElement.innerText = details;
   }
 }
