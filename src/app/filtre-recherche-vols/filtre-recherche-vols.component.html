@@ -1,0 +1,62 @@
+<div class="search-filter">
+  <form (ngSubmit)="onSubmit()" #flightForm="ngForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="departure">Depuis</label>
+        <select id="departure" class="form-control" [(ngModel)]="departure" name="departure" required>
+          <option *ngFor="let city of cities" [value]="city.code">{{ city.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="destination">Vers</label>
+        <select id="destination" class="form-control" [(ngModel)]="destination" name="destination" (change)="onDestinationChange()" required>
+          <option *ngFor="let city of getFilteredCities()" [value]="city.code">{{ city.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group trip-type">
+        <label>
+          <input type="radio" [(ngModel)]="tripType" name="tripType" value="one-way" (change)="onTripTypeChange()" required>
+          Aller simple
+        </label>
+        <label>
+          <input type="radio" [(ngModel)]="tripType" name="tripType" value="round-trip" (change)="onTripTypeChange()" required>
+          Aller-Retour
+        </label>
+      </div>
+    </div>
+
+    <div *ngIf="showAdditionalFields">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="departureDate">Date de départ *</label>
+          <input type="date" id="departureDate" class="form-control" [(ngModel)]="departureDate" name="departureDate" [min]="today" required>
+        </div>
+
+        <div class="form-group">
+          <label for="returnDate">Date d'arrivée *</label>
+          <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [disabled]="tripType === 'one-way'" [min]="departureDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="adults">Nombre d'adultes *</label>
+          <input type="number" id="adults" class="form-control" [(ngModel)]="adults" name="adults" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="children">Nombre d'enfants</label>
+          <input type="number" id="children" class="form-control" [(ngModel)]="children" name="children" min="0" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <button *ngIf="showAdditionalFields" type="button" class="btn btn-secondary reduce-btn" (click)="toggleFields()">
+        <i class="fas fa-chevron-up"></i> Réduire
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="!flightForm.valid">Réserver maintenant</button>
+    </div>
+  </form>
+  <p id="flight-details" #flightDetails></p>
+</div>

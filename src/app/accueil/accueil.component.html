@@ -1,35 +1,28 @@
-<div class="container-fluid p-0">
-  <header class="bg-dark text-white text-center py-3">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6 text-md-left">
-          <span>Pour plus d'informations :</span>
-          <a href="tel:+33456702889" class="text-white">
-            +33 (0) 456 702 889
-          </a>
-        </div>
-        <div class="col-md-6 text-md-right">
-          <nav class="nav">
-            <a class="nav-link text-white" href="#">Accueil</a>
-            <a class="nav-link text-white" href="#">IzySafar</a>
-            <a class="nav-link text-white" href="#">Réservation</a>
-            <a class="nav-link text-white" href="#">Pèlerinage</a>
-            <a class="nav-link text-white" href="#">Contact</a>
-          </nav>
-        </div>
+<div class="header-container">
+  <header class="text-white text-center py-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div class="contact-info d-flex flex-column flex-md-row align-items-center mb-2 mb-md-0">
+        <span class="mr-2">Pour plus d'informations :</span>
+        <a href="tel:+33456702889" class="text-white mr-2">
+          +33 (0) 456 702 889
+        </a>
       </div>
+      <a href="#">
+        <img src="https://www.izysafar.com/wp-content/uploads/2023/06/logo-blanc-izysafar-small.png" alt="Logo" class="logo mb-2 mb-md-0">
+      </a>
+      <nav class="nav d-flex flex-column flex-md-row">
+        <a class="nav-link text-white" href="#">Accueil</a>
+        <a class="nav-link text-white" href="#">IzySafar</a>
+        <a class="nav-link text-white" href="#">Réservation</a>
+        <a class="nav-link text-white" href="#">Pèlerinage</a>
+        <a class="nav-link text-white" href="#">Contact</a>
+      </nav>
     </div>
   </header>
-
-  <section class="hero-section d-flex align-items-center" style="background-image: url('assets/hero.jpg'); background-size: cover; height: 100vh;">
+  <section class="hero-section d-flex align-items-center">
     <div class="container text-center text-white">
-      <h1 class="display-4">Votre agence de proximité</h1>
-      <p class="lead">Prêt à vivre des expériences de voyage uniques et mémorables ? IZYSAFAR est là pour réaliser vos rêves d’évasion en vous offrant un service personnalisé, éthique et de qualité.</p>
+      <!-- Insertion du composant de recherche de vols -->
+      <app-filtre-recherche-vols></app-filtre-recherche-vols>
     </div>
   </section>
-
-  <section class="reservation-form-section">
-    <app-formulaire-reservation></app-formulaire-reservation>
-  </section>
-  
 </div>
