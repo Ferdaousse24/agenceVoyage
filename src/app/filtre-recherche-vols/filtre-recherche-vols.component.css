@@ -101,6 +101,6 @@ mat-form-field {
   margin-right: 5px;
 }
 
-#depart {
+#depart, #destination {
   height: 2px;
 }

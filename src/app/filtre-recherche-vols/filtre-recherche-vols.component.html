@@ -15,10 +15,15 @@
 
       <div class="form-group">
         <label for="destination">Vers</label>
-        <select id="destination" class="form-control" [(ngModel)]="destination" name="destination" (change)="onDestinationChange()" required>
-          <option *ngFor="let city of getFilteredCities()" [value]="city.code">{{ city.name }}</option>
-        </select>
-      </div>
+        <mat-form-field>
+          <input type="text" placeholder="Search" matInput [formControl]="destinationControl" [matAutocomplete]="autoDest" name="destination" id="destination" required>
+          <mat-autocomplete #autoDest="matAutocomplete">
+            <mat-option *ngFor="let city of filteredDestinationOptions | async" [value]="city.name">
+              {{ city.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>      
 
       <div class="form-group trip-type">
         <label>

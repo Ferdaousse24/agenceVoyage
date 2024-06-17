@@ -32,6 +32,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   ];
 
   departureControl = new FormControl();
+  destinationControl = new FormControl();
   departure = '';
   destination = '';
   tripType = 'one-way';
@@ -45,30 +46,48 @@ export class FiltreRechercheVolsComponent implements OnInit {
   today: string = new Date().toISOString().split('T')[0];
 
   filteredOptions!: Observable<any[]>;
+  filteredDestinationOptions!: Observable<any[]>;
 
   ngOnInit() {
     this.filteredOptions = this.departureControl.valueChanges.pipe(
       startWith(''),
-      map(value => this.filter(value))
+      map(value => this.filterDepartureOptions(value))
+    );
+
+    this.filteredDestinationOptions = this.destinationControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterDestinationOptions(value))
     );
 
     this.departureControl.valueChanges.subscribe(value => {
       this.departure = this.getCityCode(value);
+      this.filteredDestinationOptions = of(this.filterDestinationOptions(this.destinationControl.value));
+    });
+
+    this.destinationControl.valueChanges.subscribe(value => {
+      this.destination = this.getCityCode(value);
+      this.onDestinationChange(); // Met à jour l'affichage des champs additionnels
+      this.filteredOptions = of(this.filterDepartureOptions(this.departureControl.value));
     });
   }
 
-  filter(value: string): any[] {
+  filterDepartureOptions(value: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.cities.filter(option => option.name.toLowerCase().includes(filterValue));
+    return this.cities.filter(option => 
+      option.name.toLowerCase().includes(filterValue) && option.code !== this.destination
+    );
+  }
+
+  filterDestinationOptions(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.cities.filter(option => 
+      option.name.toLowerCase().includes(filterValue) && option.code !== this.departure
+    );
   }
 
   getCityCode(cityName: string): string {
     const city = this.cities.find(c => c.name === cityName);
     return city ? city.code : '';
-  }
-
-  getFilteredCities() {
-    return this.cities.filter(city => city.code !== this.departure);
   }
 
   onDestinationChange() {
@@ -87,6 +106,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   onSubmit() {
     this.departure = this.getCityCode(this.departureControl.value);
+    this.destination = this.getCityCode(this.destinationControl.value);
 
     if (this.tripType === 'round-trip' && this.returnDate <= this.departureDate) {
       alert('La date de retour doit être supérieure à la date de départ.');
