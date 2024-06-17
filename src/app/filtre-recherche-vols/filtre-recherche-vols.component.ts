@@ -1,15 +1,19 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { Observable, of } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatInputModule],
   templateUrl: './filtre-recherche-vols.component.html',
   styleUrls: ['./filtre-recherche-vols.component.css']
 })
-export class FiltreRechercheVolsComponent {
+export class FiltreRechercheVolsComponent implements OnInit {
   @ViewChild('flightDetails') flightDetails!: ElementRef;
   @ViewChild('flightForm') flightForm!: NgForm;
 
@@ -27,7 +31,8 @@ export class FiltreRechercheVolsComponent {
     // Ajoutez toutes les autres villes du fichier CSV de la même manière
   ];
 
-  departure = this.cities[0].code;
+  departureControl = new FormControl();
+  departure = '';
   destination = '';
   tripType = 'one-way';
   showAdditionalFields = false;
@@ -38,6 +43,29 @@ export class FiltreRechercheVolsComponent {
   children: number = 0;
   
   today: string = new Date().toISOString().split('T')[0];
+
+  filteredOptions!: Observable<any[]>;
+
+  ngOnInit() {
+    this.filteredOptions = this.departureControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filter(value))
+    );
+
+    this.departureControl.valueChanges.subscribe(value => {
+      this.departure = this.getCityCode(value);
+    });
+  }
+
+  filter(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.cities.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  getCityCode(cityName: string): string {
+    const city = this.cities.find(c => c.name === cityName);
+    return city ? city.code : '';
+  }
 
   getFilteredCities() {
     return this.cities.filter(city => city.code !== this.departure);
@@ -58,6 +86,8 @@ export class FiltreRechercheVolsComponent {
   }
 
   onSubmit() {
+    this.departure = this.getCityCode(this.departureControl.value);
+
     if (this.tripType === 'round-trip' && this.returnDate <= this.departureDate) {
       alert('La date de retour doit être supérieure à la date de départ.');
       return;

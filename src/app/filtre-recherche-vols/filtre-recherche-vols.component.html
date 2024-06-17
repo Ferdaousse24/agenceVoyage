@@ -3,9 +3,14 @@
     <div class="form-row">
       <div class="form-group">
         <label for="departure">Depuis</label>
-        <select id="departure" class="form-control" [(ngModel)]="departure" name="departure" required>
-          <option *ngFor="let city of cities" [value]="city.code">{{ city.name }}</option>
-        </select>
+        <mat-form-field>
+          <input type="text" placeholder="Search" matInput [formControl]="departureControl" [matAutocomplete]="auto" name="departure" id="depart" required>
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let city of filteredOptions | async" [value]="city.name">
+              {{ city.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
       </div>
 
       <div class="form-group">
