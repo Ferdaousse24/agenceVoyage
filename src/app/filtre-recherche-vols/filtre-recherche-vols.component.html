@@ -5,7 +5,7 @@
         <label for="departure">Depuis</label>
         <mat-form-field>
           <input type="text" placeholder="Search" matInput [formControl]="departureControl" [matAutocomplete]="auto" name="departure" id="depart" required>
-          <mat-autocomplete #auto="matAutocomplete">
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onDepartureSelected($event)">
             <mat-option *ngFor="let city of filteredOptions | async" [value]="city.name">
               {{ city.name }}
             </mat-option>
@@ -17,7 +17,7 @@
         <label for="destination">Vers</label>
         <mat-form-field>
           <input type="text" placeholder="Search" matInput [formControl]="destinationControl" [matAutocomplete]="autoDest" name="destination" id="destination" required>
-          <mat-autocomplete #autoDest="matAutocomplete">
+          <mat-autocomplete #autoDest="matAutocomplete" (optionSelected)="onDestinationSelected($event)">
             <mat-option *ngFor="let city of filteredDestinationOptions | async" [value]="city.name">
               {{ city.name }}
             </mat-option>
