@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatInputModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatInputModule, MatSnackBarModule],
   templateUrl: './filtre-recherche-vols.component.html',
   styleUrls: ['./filtre-recherche-vols.component.css']
 })
@@ -37,6 +38,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
   destination = '';
   tripType = 'one-way';
   showAdditionalFields = false;
+  departureError = '';
+  destinationError = '';
 
   departureDate: string = '';
   returnDate: string = '';
@@ -48,46 +51,61 @@ export class FiltreRechercheVolsComponent implements OnInit {
   filteredOptions!: Observable<any[]>;
   filteredDestinationOptions!: Observable<any[]>;
 
+  constructor(private snackBar: MatSnackBar) {}
+
   ngOnInit() {
     this.filteredOptions = this.departureControl.valueChanges.pipe(
       startWith(''),
-      map(value => this.filterDepartureOptions(value))
+      map(value => this.filterOptions(value, 'departure'))
     );
 
     this.filteredDestinationOptions = this.destinationControl.valueChanges.pipe(
       startWith(''),
-      map(value => this.filterDestinationOptions(value))
+      map(value => this.filterOptions(value, 'destination'))
     );
 
     this.departureControl.valueChanges.subscribe(value => {
       this.departure = this.getCityCode(value);
-      this.filteredDestinationOptions = of(this.filterDestinationOptions(this.destinationControl.value));
+      this.updateFilteredOptions();
     });
 
     this.destinationControl.valueChanges.subscribe(value => {
       this.destination = this.getCityCode(value);
+      this.updateFilteredOptions();
       this.onDestinationChange(); // Met à jour l'affichage des champs additionnels
-      this.filteredOptions = of(this.filterDepartureOptions(this.departureControl.value));
     });
   }
 
-  filterDepartureOptions(value: string): any[] {
+  filterOptions(value: string, type: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.cities.filter(option => 
-      option.name.toLowerCase().includes(filterValue) && option.code !== this.destination
-    );
-  }
-
-  filterDestinationOptions(value: string): any[] {
-    const filterValue = value.toLowerCase();
-    return this.cities.filter(option => 
-      option.name.toLowerCase().includes(filterValue) && option.code !== this.departure
-    );
+    return this.cities.filter(option => {
+      const match = option.name.toLowerCase().includes(filterValue);
+      if (type === 'departure') {
+        return match && option.code !== this.destination;
+      } else {
+        return match && option.code !== this.departure;
+      }
+    });
   }
 
   getCityCode(cityName: string): string {
     const city = this.cities.find(c => c.name === cityName);
     return city ? city.code : '';
+  }
+
+  updateFilteredOptions() {
+    this.filteredOptions = of(this.filterOptions(this.departureControl.value, 'departure'));
+    this.filteredDestinationOptions = of(this.filterOptions(this.destinationControl.value, 'destination'));
+  }
+
+  onDepartureSelected(event: any) {
+    this.departure = this.getCityCode(event.option.value);
+    this.updateFilteredOptions();
+  }
+
+  onDestinationSelected(event: any) {
+    this.destination = this.getCityCode(event.option.value);
+    this.updateFilteredOptions();
   }
 
   onDestinationChange() {
@@ -105,11 +123,27 @@ export class FiltreRechercheVolsComponent implements OnInit {
   }
 
   onSubmit() {
-    this.departure = this.getCityCode(this.departureControl.value);
-    this.destination = this.getCityCode(this.destinationControl.value);
+    this.departureError = '';
+    this.destinationError = '';
+
+    const departureCity = this.cities.find(city => city.name === this.departureControl.value);
+    const destinationCity = this.cities.find(city => city.name === this.destinationControl.value);
+
+    if (!departureCity) {
+      this.departureError = 'La ville de départ n\'est pas valide.';
+      this.showError(this.departureError);
+      return;
+    }
+
+    if (this.departure === this.destination) {
+      this.destinationError = 'La ville de départ ne peut pas être la même que la ville d\'arrivée.';
+      this.showError(this.destinationError);
+      return;
+    }
 
     if (this.tripType === 'round-trip' && this.returnDate <= this.departureDate) {
-      alert('La date de retour doit être supérieure à la date de départ.');
+      this.destinationError = 'La date de retour doit être supérieure à la date de départ.';
+      this.showError(this.destinationError);
       return;
     }
 
@@ -123,6 +157,12 @@ export class FiltreRechercheVolsComponent implements OnInit {
       children: this.children
     });
     this.displayFlightDetails();
+  }
+
+  showError(message: string) {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 5000,
+    });
   }
 
   displayFlightDetails() {
