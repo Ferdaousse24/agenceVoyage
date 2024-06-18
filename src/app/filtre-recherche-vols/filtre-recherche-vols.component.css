@@ -104,3 +104,15 @@ mat-form-field {
 #depart, #destination {
   height: 2px;
 }
+
+/* Responsiveness */
+@media (max-width: 767.98px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-group {
+    width: 100%;
+    margin: 0 0 15px 0;
+  }
+}
