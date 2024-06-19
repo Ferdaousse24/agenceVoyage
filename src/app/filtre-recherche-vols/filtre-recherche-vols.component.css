@@ -1,3 +1,4 @@
+/* Styles généraux */
 .search-filter {
   padding: 20px;
   border-radius: 5px;
@@ -33,7 +34,6 @@ mat-form-field {
   margin-top: 5px;
 }
 
-/* Style spécifique pour les champs mat-form-field */
 mat-form-field {
   display: block;
   margin-top: 0;
@@ -105,7 +105,7 @@ mat-form-field {
   height: 2px;
 }
 
-/* Responsiveness */
+/* Réactivité */
 @media (max-width: 767.98px) {
   .form-row {
     flex-direction: column;
@@ -115,4 +115,15 @@ mat-form-field {
     width: 100%;
     margin: 0 0 15px 0;
   }
+}
+
+
+/* Appliquer la couleur blanche par défaut au texte des onglets */
+::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  color: white !important; /* Couleur du texte en blanc par défaut */
+}
+
+/* Appliquer le style spécifié à l'onglet actif */
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: white !important; /* Couleur du texte en blanc */
 }

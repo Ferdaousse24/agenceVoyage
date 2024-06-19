@@ -4,13 +4,14 @@ import { FormsModule, NgForm, ReactiveFormsModule, FormControl } from '@angular/
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatInputModule, MatSnackBarModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatInputModule, MatSnackBarModule, MatTabsModule],
   templateUrl: './filtre-recherche-vols.component.html',
   styleUrls: ['./filtre-recherche-vols.component.css']
 })
@@ -50,6 +51,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   filteredOptions!: Observable<any[]>;
   filteredDestinationOptions!: Observable<any[]>;
+
+  selectedIndex: number = 0;
+  isTab2Enabled: boolean = false;
 
   constructor(private snackBar: MatSnackBar) {}
 
@@ -156,7 +160,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
       adults: this.adults,
       children: this.children
     });
-    this.displayFlightDetails();
+    this.enableTab2(); // Active le deuxième onglet et affiche les détails du vol
   }
 
   showError(message: string) {
@@ -165,15 +169,14 @@ export class FiltreRechercheVolsComponent implements OnInit {
     });
   }
 
-  displayFlightDetails() {
-    const details = `
-      Départ: ${this.departure},
-      Destination: ${this.destination},
-      Date de départ: ${this.departureDate},
-      Date de retour: ${this.tripType === 'round-trip' ? this.returnDate : 'N/A'},
-      Nombre d'adultes: ${this.adults},
-      Nombre d'enfants: ${this.children}
-    `;
-    this.flightDetails.nativeElement.innerText = details;
+  enableTab2() {
+    this.isTab2Enabled = true;
+    this.selectedIndex = 1; // Change l'index sélectionné pour afficher le deuxième onglet
+  }
+
+  onTabChange(event: any) {
+    if (event.index === 0) {
+      this.isTab2Enabled = false; // Désactive l'onglet 2 si on revient à l'onglet 1
+    }
   }
 }
