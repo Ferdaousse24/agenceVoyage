@@ -16,7 +16,14 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row; /* Modifié pour que les éléments soient alignés horizontalement */
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ajouté pour espacer les éléments */
+  width: 100%;
 }
 
 .hero-section {
@@ -49,7 +56,6 @@ header {
 .contact-info {
   display: flex;
   align-items: center;
-  flex-direction: column;
 }
 
 .menu-icon {
