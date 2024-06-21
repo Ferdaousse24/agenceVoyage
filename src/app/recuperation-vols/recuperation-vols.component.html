@@ -1,0 +1,29 @@
+<div class="flight-selection">
+  <h2>Sélectionnez votre vol de départ de {{ departure }} vers {{ destination }}</h2>
+  
+  <div class="dates-navigation">
+    <button class="nav-button" (click)="navigate(-1)">&lt;</button>
+    <div *ngFor="let flight of flights; let i = index" class="date-option" [class.selected]="i === selectedIndex" (click)="selectFlight(flight, i)">
+      <strong>Code départ:</strong> {{ flight.departureCode }}<br>
+      <strong>Code destination:</strong> {{ flight.destinationCode }}<br>
+      <strong>Compagnie:</strong> {{ flight.carrier }}<br>
+      <strong>Prix:</strong> {{ flight.price }} EUR<br>
+      <strong>Heure de départ:</strong> {{ flight.departureTime }}<br>
+      <strong>Heure d'arrivée:</strong> {{ flight.arrivalTime }}<br>
+      <strong>Durée:</strong> {{ flight.duration }}<br>
+      <strong>Nombre d'escales:</strong> {{ flight.stops }}
+    </div>
+    <button class="nav-button" (click)="navigate(1)">&gt;</button>
+  </div>
+
+  <div *ngIf="selectedFlight" class="flight-details">
+    <div class="flight-time">
+      <p>{{ selectedFlight.departureTime | date: 'HH:mm' }}</p>
+      <span class="flight-duration">{{ selectedFlight.duration }}</span>
+      <p>{{ selectedFlight.arrivalTime | date: 'HH:mm' }}</p>
+    </div>
+    <p>{{ departure }} / {{ destination }}</p>
+    <p>{{ selectedFlight.stops === 0 ? 'Vol direct' : selectedFlight.stops + ' escale(s)' }}</p>
+    <button class="select-button">Depuis EUR {{ selectedFlight.price }}</button>
+  </div>
+</div>

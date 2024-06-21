@@ -7,11 +7,22 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AmadeusService } from '../services/amadeus.service';
+import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vols.component';
 
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatInputModule, MatSnackBarModule, MatTabsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    RecuperationVolsComponent
+  ],
   templateUrl: './filtre-recherche-vols.component.html',
   styleUrls: ['./filtre-recherche-vols.component.css']
 })
@@ -111,7 +122,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
     { code: 'NYC', name: 'New York, USA' }
 ];
 
-
   departureControl = new FormControl();
   destinationControl = new FormControl();
   departure = '';
@@ -125,7 +135,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   returnDate: string = '';
   adults: number = 1;
   children: number = 0;
-  
+
   today: string = new Date().toISOString().split('T')[0];
 
   filteredOptions!: Observable<any[]>;
@@ -133,8 +143,10 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   selectedIndex: number = 0;
   isTab2Enabled: boolean = false;
+  flights: any[] = [];
+  selectedFlight: any = null;
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar, private amadeusService: AmadeusService) {}
 
   ngOnInit() {
     this.filteredOptions = this.departureControl.valueChanges.pipe(
@@ -155,7 +167,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.destinationControl.valueChanges.subscribe(value => {
       this.destination = this.getCityCode(value);
       this.updateFilteredOptions();
-      this.onDestinationChange(); // Met à jour l'affichage des champs additionnels
+      this.onDestinationChange();
     });
   }
 
@@ -205,7 +217,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.showAdditionalFields = !this.showAdditionalFields;
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.departureError = '';
     this.destinationError = '';
 
@@ -239,8 +251,34 @@ export class FiltreRechercheVolsComponent implements OnInit {
       adults: this.adults,
       children: this.children
     });
-    this.enableTab2(); // Active le deuxième onglet et affiche les détails du vol
+
+    try {
+      const flightOffers = await this.amadeusService.searchFlights(this.departure, this.destination, this.departureDate);
+      console.log('API Response:', flightOffers); // Affiche le retour de l'API dans la console
+
+      this.flights = flightOffers.data.map((offer: any) => {
+        const segments = offer.itineraries[0].segments;
+        const departureSegment = segments[0];
+        const arrivalSegment = segments[segments.length - 1];
+
+        return {
+          departureCode: departureSegment.departure.iataCode,
+          destinationCode: arrivalSegment.arrival.iataCode,
+          carrier: offer.validatingAirlineCodes[0],
+          price: offer.price.total,
+          departureTime: departureSegment.departure.at,
+          arrivalTime: arrivalSegment.arrival.at,
+          duration: offer.itineraries[0].duration,
+          stops: segments.length - 1
+        };
+      });
+      this.enableTab2(); // Active le deuxième onglet et affiche les résultats de vol
+    } catch (error) {
+      console.error('Error fetching flight offers:', error);
+      this.showError('Erreur lors de la recherche des vols.');
+    }
   }
+  
 
   showError(message: string) {
     this.snackBar.open(message, 'Fermer', {
@@ -250,12 +288,17 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   enableTab2() {
     this.isTab2Enabled = true;
-    this.selectedIndex = 1; // Change l'index sélectionné pour afficher le deuxième onglet
+    this.selectedIndex = 1;
   }
 
   onTabChange(event: any) {
     if (event.index === 0) {
-      this.isTab2Enabled = false; // Désactive l'onglet 2 si on revient à l'onglet 1
+      this.isTab2Enabled = false;
     }
+  }
+
+  onSelectedFlightChange(flight: any) {
+    this.selectedFlight = flight;
+    console.log('Selected flight:', flight);
   }
 }

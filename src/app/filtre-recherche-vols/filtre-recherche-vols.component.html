@@ -72,31 +72,29 @@
       </form>
     </div>
   </mat-tab>
+
   <mat-tab class="styleLabel" label="2-  Choisir le vol" [disabled]="!isTab2Enabled">
-    <!-- Content for flight selection -->
-    <div class="search-filter">
-      <!-- Contenu pour choisir le vol -->
-      <p id="flight-details">
-        <strong>Départ:</strong> {{ departure }}<br>
-        <strong>Destination:</strong> {{ destination }}<br>
-        <strong>Date de départ:</strong> {{ departureDate }}<br>
-        <strong>Date de retour:</strong> {{ tripType === 'round-trip' ? returnDate : 'N/A' }}<br>
-        <strong>Nombre d'adultes:</strong> {{ adults }}<br>
-        <strong>Nombre d'enfants:</strong> {{ children }}
-      </p>
-    </div>
+    <app-recuperation-vols
+      [flights]="flights"
+      [departure]="departure"
+      [destination]="destination"
+      [departureDate]="departureDate"
+      [returnDate]="returnDate"
+      [tripType]="tripType"
+      [adults]="adults"
+      [children]="children"
+      (selectedFlightChange)="onSelectedFlightChange($event)">
+    </app-recuperation-vols>
   </mat-tab>
+
   <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="true">
-    <!-- Content for traveler information -->
     <div class="search-filter">
-      <!-- Votre contenu pour les informations voyageur -->
       Contenu pour les informations voyageur.
     </div>
   </mat-tab>
+
   <mat-tab class="styleLabel" label="4-  Paiement" [disabled]="true">
-    <!-- Content for payment -->
     <div class="search-filter">
-      <!-- Votre contenu pour le paiement -->
       Contenu pour le paiement.
     </div>
   </mat-tab>
