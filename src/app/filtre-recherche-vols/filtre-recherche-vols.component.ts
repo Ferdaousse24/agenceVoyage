@@ -146,6 +146,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
   flights: any[] = [];
   selectedFlight: any = null;
 
+  isLoading: boolean = false; // Ajoutez cette ligne
+
   constructor(private snackBar: MatSnackBar, private amadeusService: AmadeusService) {}
 
   ngOnInit() {
@@ -220,28 +222,28 @@ export class FiltreRechercheVolsComponent implements OnInit {
   async onSubmit() {
     this.departureError = '';
     this.destinationError = '';
-
+  
     const departureCity = this.cities.find(city => city.name === this.departureControl.value);
     const destinationCity = this.cities.find(city => city.name === this.destinationControl.value);
-
+  
     if (!departureCity) {
       this.departureError = 'La ville de départ n\'est pas valide.';
       this.showError(this.departureError);
       return;
     }
-
+  
     if (this.departure === this.destination) {
       this.destinationError = 'La ville de départ ne peut pas être la même que la ville d\'arrivée.';
       this.showError(this.destinationError);
       return;
     }
-
+  
     if (this.tripType === 'round-trip' && this.returnDate <= this.departureDate) {
       this.destinationError = 'La date de retour doit être supérieure à la date de départ.';
       this.showError(this.destinationError);
       return;
     }
-
+  
     console.log('Recherche de vol :', {
       departure: this.departure,
       destination: this.destination,
@@ -251,16 +253,18 @@ export class FiltreRechercheVolsComponent implements OnInit {
       adults: this.adults,
       children: this.children
     });
-
+  
+    this.isLoading = true; // Commencer le chargement
+  
     try {
       const flightOffers = await this.amadeusService.searchFlights(this.departure, this.destination, this.departureDate);
-      console.log('API Response:', flightOffers); // Affiche le retour de l'API dans la console
-
+      console.log('API Response:', flightOffers);
+  
       this.flights = flightOffers.data.map((offer: any) => {
         const segments = offer.itineraries[0].segments;
         const departureSegment = segments[0];
         const arrivalSegment = segments[segments.length - 1];
-
+  
         return {
           departureCode: departureSegment.departure.iataCode,
           destinationCode: arrivalSegment.arrival.iataCode,
@@ -269,15 +273,20 @@ export class FiltreRechercheVolsComponent implements OnInit {
           departureTime: departureSegment.departure.at,
           arrivalTime: arrivalSegment.arrival.at,
           duration: offer.itineraries[0].duration,
-          stops: segments.length - 1
+          stops: segments.length - 1,
+          date: departureSegment.departure.at,
+          available: true
         };
       });
-      this.enableTab2(); // Active le deuxième onglet et affiche les résultats de vol
+      this.enableTab2();
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
+    } finally {
+      this.isLoading = false; // Arrêter le chargement
     }
   }
+  
   
 
   showError(message: string) {

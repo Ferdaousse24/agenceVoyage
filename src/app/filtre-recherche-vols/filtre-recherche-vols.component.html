@@ -1,3 +1,8 @@
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-spinner">
+    <i class="fas fa-spinner fa-spin"></i> Chargement...
+  </div>
+</div>
 <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onTabChange($event)">
   <mat-tab class="styleLabel" label="1-  Réservation">
     <div class="search-filter">
