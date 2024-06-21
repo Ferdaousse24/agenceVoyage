@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 import { environement } from '../../environement/environement';
-import * as qs from 'qs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,46 +14,41 @@ export class AmadeusService {
 
   private async getToken() {
     try {
-      const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', qs.stringify({
+      const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', {
         grant_type: 'client_credentials',
         client_id: environement.amadeus.clientId,
         client_secret: environement.amadeus.clientSecret
-      }), {
+      }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       });
+
       this.token = response.data.access_token;
     } catch (error) {
-      console.error('Error fetching the token:', error);
-      throw error;
+      const axiosError = error as any; // Assertion de type pour error
+      console.error('Error fetching the token:', axiosError.response?.data || axiosError.message || error);
     }
   }
 
-  public async searchFlights(origin: string, destination: string, departureDate: string) {
+  async searchFlights(departure: string, destination: string, departureDate: string) {
     if (!this.token) {
-      await this.getToken();
+      throw new Error('No token available');
     }
 
-    try {
-      const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
-        headers: {
-          Authorization: `Bearer ${this.token}`
-        },
-        params: {
-          originLocationCode: origin,
-          destinationLocationCode: destination,
-          departureDate: departureDate,
-          adults: 1,
-          max: 1 // Limite le nombre de résultats à 1
-        }
-      });
+    const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
+      params: {
+        originLocationCode: departure,
+        destinationLocationCode: destination,
+        departureDate: departureDate,
+        adults: 1,
+        max: 7,
+      },
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
 
-      console.log('API Response:', response.data); // Affiche le retour de l'API dans la console
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching flight offers:', error);
-      throw error;
-    }
+    return response.data;
   }
 }
