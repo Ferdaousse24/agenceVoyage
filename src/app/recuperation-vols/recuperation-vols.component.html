@@ -1,16 +1,16 @@
 <div class="flight-selection">
   <h2>Sélectionnez votre vol de départ de {{ departure }} vers {{ destination }}</h2>
   <div class="dates-navigation">
-    <button class="nav-button" (click)="navigate(-1)">&lt;</button>
-    <div *ngFor="let flight of flights; let i = index" class="date-option" [class.selected]="i === selectedIndex" (click)="selectFlight(flight, i)">
+    <button class="nav-button" (click)="navigateDays(-7)" [disabled]="isAtStartDate()">&lt;</button>
+    <div *ngFor="let flight of weekDaysFlights; let i = index" class="date-option" [class.selected]="i === selectedIndex" (click)="selectFlight(flight, i)">
       <p>{{ flight.departureCode }} &rarr; {{ flight.destinationCode }}</p>
       <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
       <p>{{ flight.available ? 'EUR ' + flight.price + ' +' : 'pas de vols' }}</p>
-      <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops + ' escale(s)' }}</p>
+      <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops !== null ? flight.stops + ' escale(s)' : 'N/A' }}</p>
     </div>
-    <button class="nav-button" (click)="navigate(1)">&gt;</button>
+    <button class="nav-button" (click)="navigateDays(7)">&gt;</button>
   </div>
-  <div *ngIf="selectedFlight" class="flight-details">
+  <div *ngIf="selectedFlight && selectedFlight.available" class="flight-details">
     <div class="flight-time">
       <p>{{ selectedFlight.departureTime | date: 'HH:mm' }}</p>
       <span class="flight-duration">{{ selectedFlight.duration }}</span>
@@ -18,6 +18,9 @@
     </div>
     <p>{{ departure }} / {{ destination }}</p>
     <p>{{ selectedFlight.stops === 0 ? 'Vol direct' : selectedFlight.stops + ' escale(s)' }}</p>
-    <button class="select-button">Depuis EUR {{ selectedFlight.price }}</button>
+    <button class="select-button" (click)="onFlightSelected()">Depuis EUR {{ selectedFlight.price }}</button>
+  </div>
+  <div *ngIf="selectedFlight && !selectedFlight.available" class="flight-details">
+    <p>Pas de vols disponibles pour cette date.</p>
   </div>
 </div>
