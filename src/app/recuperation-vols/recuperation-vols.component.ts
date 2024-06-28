@@ -45,14 +45,17 @@ export class RecuperationVolsComponent implements OnChanges {
   currentDate: Date = new Date();
   returnCurrentDate: Date = new Date();
   today: Date = new Date();
+  selectedDate: string = '';
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flights'] && changes['flights'].currentValue.length > 0) {
       this.filterFlights();
+      this.selectedDate = this.departureDate.split('T')[0]; // Set the selected date to departureDate
     }
 
     if (changes['returnFlights'] && changes['returnFlights'].currentValue.length > 0) {
       this.filterReturnFlights();
+      this.selectedDate = this.returnDate.split('T')[0]; // Set the selected date to returnDate
     }
   }
 
@@ -70,6 +73,7 @@ export class RecuperationVolsComponent implements OnChanges {
     const sortedFlights = Object.values(flightsByDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     this.filteredFlights = sortedFlights;
     this.updateWeekDaysFlights();
+    this.scrollToSelectedDate();
   }
 
   filterReturnFlights() {
@@ -86,6 +90,7 @@ export class RecuperationVolsComponent implements OnChanges {
     const sortedReturnFlights = Object.values(returnFlightsByDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     this.filteredReturnFlights = sortedReturnFlights;
     this.updateReturnWeekDaysFlights();
+    this.scrollToSelectedDate();
   }
 
   updateWeekDaysFlights() {
@@ -183,14 +188,23 @@ export class RecuperationVolsComponent implements OnChanges {
     let totalPrice = 0;
     
     if (this.selectedDepartureFlight && this.selectedReturnFlight) {
-      totalPrice = this.selectedDepartureFlight.price + this.selectedReturnFlight.price;
+      totalPrice = Number(this.selectedDepartureFlight.price) + Number(this.selectedReturnFlight.price);
     } else if (this.selectedDepartureFlight) {
-      totalPrice = this.selectedDepartureFlight.price;
+      totalPrice = Number(this.selectedDepartureFlight.price);
     }
     
     return totalPrice;
   }
-  
+
+  scrollToSelectedDate() {
+    setTimeout(() => {
+      const selectedElement = document.getElementById(`flight-${this.selectedDate}`);
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 0);
+  }
+
   navigateDays(step: number) {
     this.currentDate.setDate(this.currentDate.getDate() + step);
     this.updateWeekDaysFlights();

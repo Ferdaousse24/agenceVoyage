@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   margin: 10px 0;
-  overflow-x: hidden;
+  overflow-x: auto; /* Permettre le défilement horizontal */
   white-space: nowrap;
   width: 100%;
 }
@@ -95,18 +95,19 @@
 
 @media (max-width: 600px) {
   .dates-navigation {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* Changer pour aligner horizontalement */
+    flex-wrap: nowrap; /* Empêcher le passage à la ligne */
+    overflow-x: auto; /* Activer le défilement horizontal */
   }
 
   .date-option {
-    margin: 5px 0;
-    width: 100%;
+    margin: 5px;
+    width: auto; /* Laisser la taille s'ajuster automatiquement */
   }
 
   .flight-details,
   .no-flights {
-    width: 90%;
+    width: auto;
   }
 
   .select-button {
