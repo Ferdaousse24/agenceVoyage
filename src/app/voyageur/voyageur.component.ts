@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -21,6 +21,8 @@ export class VoyageurComponent {
   filteredNationalities: string[] = [];
   maxBirthDate: string = new Date().toISOString().split('T')[0]; // Définir la date maximale comme aujourd'hui
 
+  @Output() formValid = new EventEmitter<void>();
+
   onSubmit() {
     this.passportNumberInvalid = !this.validatePassportNumber(this.passportNumber);
 
@@ -35,6 +37,9 @@ export class VoyageurComponent {
       };
 
       console.log('Informations Voyageur:', voyageurInfo);
+
+      // Emit formValid event
+      this.formValid.emit();
     } else {
       console.log('Numéro de passeport invalide:', this.passportNumber);
     }

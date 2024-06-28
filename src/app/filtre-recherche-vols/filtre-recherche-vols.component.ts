@@ -237,8 +237,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
   enableTab4() {
     this.isTab4Enabled = true;
     this.selectedIndex = 3;
-    this.paymentMessage = "On va passer au paiement.";
   }
+  
 
   onSelectedFlightChange(flight: any) {
     console.log('Selected flight:', flight);
@@ -257,6 +257,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
     } else if (event.index === 1) {
       this.isTab3Enabled = false;
       this.isTab4Enabled = false;
+    } else if (event.index === 3) {
+      // Activer la redirection automatique vers le lien de paiement
+      window.location.href = 'https://pay-pro.monetico.fr/izysafar/paiement';
     }
   }
   cities = [
