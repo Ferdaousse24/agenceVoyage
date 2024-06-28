@@ -2,7 +2,7 @@
   <h2>Sélectionnez votre vol de départ de {{ departure }} vers {{ destination }}</h2>
   <div class="dates-navigation">
     <button class="nav-button" (click)="navigateDays(-7)" [disabled]="isAtStartDate()">&lt;</button>
-    <div *ngFor="let flight of weekDaysFlights; let i = index" class="date-option">
+    <div *ngFor="let flight of weekDaysFlights; let i = index" class="date-option" [attr.id]="'flight-' + flight.date.split('T')[0]">
       <div 
         class="selectable-flight" 
         [class.selected]="isSelectedDepartureFlight(i)" 
@@ -20,7 +20,7 @@
     <h2>Sélectionnez votre vol de retour de {{ destination }} vers {{ departure }}</h2>
     <div class="dates-navigation">
       <button class="nav-button" (click)="navigateReturnDays(-7)" [disabled]="isAtStartDate()">&lt;</button>
-      <div *ngFor="let flight of returnWeekDaysFlights; let i = index" class="date-option">
+      <div *ngFor="let flight of returnWeekDaysFlights; let i = index" class="date-option" [attr.id]="'return-flight-' + flight.date.split('T')[0]">
         <div 
           class="selectable-flight" 
           [class.selected]="isSelectedReturnFlight(i)" 
@@ -48,6 +48,6 @@
     class="select-button" 
     (click)="onFlightSelected()" 
     [disabled]="!selectedDepartureFlight || !selectedReturnFlight || !selectedDepartureFlight.available || !selectedReturnFlight.available">
-    Depuis EUR {{ calculateTotalPrice() }}
+    Total = {{ calculateTotalPrice() }}
   </button>
 </div>
