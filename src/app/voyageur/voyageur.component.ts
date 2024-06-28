@@ -51,7 +51,8 @@ export class VoyageurComponent {
   }
 
   validatePassportNumber(passportNumber: string): boolean {
-    const passportRegex = /^[A-Z]{2}\d{7}$/;
+    // Modèle plus flexible pour le passeport français
+    const passportRegex = /^[0-9A-Z]{9}$/;
     const isValid = passportRegex.test(passportNumber);
     console.log(`Validating passport number: ${passportNumber}, isValid: ${isValid}`);
     return isValid;

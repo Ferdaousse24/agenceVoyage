@@ -23,7 +23,7 @@ interface Flight {
 })
 export class RecuperationVolsComponent implements OnChanges {
   @Input() flights: Flight[] = [];
-  @Input() returnFlights: Flight[] = []; // Ajouter l'entrée pour les vols de retour
+  @Input() returnFlights: Flight[] = [];
   @Input() departure!: string;
   @Input() destination!: string;
   @Input() departureDate!: string;
@@ -32,7 +32,7 @@ export class RecuperationVolsComponent implements OnChanges {
   @Input() adults!: number;
   @Input() children!: number;
   @Output() selectedFlightChange = new EventEmitter<Flight>();
-  @Output() flightSelected = new EventEmitter<void>();
+  @Output() flightSelected = new EventEmitter<{ totalPrice: number }>();
 
   selectedDepartureFlight: Flight | null = null;
   selectedReturnFlight: Flight | null = null;
@@ -156,12 +156,41 @@ export class RecuperationVolsComponent implements OnChanges {
     this.selectedFlightChange.emit(flight);
   }
 
-  onFlightSelected() {
-    if (this.selectedDepartureFlight && (this.tripType === 'one-way' || this.selectedReturnFlight)) {
-      this.flightSelected.emit();
-    }
+  handleFlightSelection(flight: Flight, index: number) {
+    this.selectedDepartureFlight = flight;
+    this.selectedIndex = index;
   }
 
+  handleReturnFlightSelection(flight: Flight, index: number) {
+    this.selectedReturnFlight = flight;
+    this.selectedReturnIndex = index;
+  }
+
+  onFlightSelected() {
+    if (this.tripType === 'one-way' && !this.selectedDepartureFlight) {
+      return;
+    }
+    
+    if (this.tripType === 'round-trip' && (!this.selectedDepartureFlight || !this.selectedReturnFlight)) {
+      return;
+    }
+  
+    const totalPrice = this.calculateTotalPrice();
+    this.flightSelected.emit({ totalPrice });
+  }
+
+  calculateTotalPrice(): number {
+    let totalPrice = 0;
+    
+    if (this.selectedDepartureFlight && this.selectedReturnFlight) {
+      totalPrice = this.selectedDepartureFlight.price + this.selectedReturnFlight.price;
+    } else if (this.selectedDepartureFlight) {
+      totalPrice = this.selectedDepartureFlight.price;
+    }
+    
+    return totalPrice;
+  }
+  
   navigateDays(step: number) {
     this.currentDate.setDate(this.currentDate.getDate() + step);
     this.updateWeekDaysFlights();
@@ -178,5 +207,13 @@ export class RecuperationVolsComponent implements OnChanges {
     const todayWithoutTime = new Date(this.today);
     todayWithoutTime.setHours(0, 0, 0, 0);
     return currentDateWithoutTime <= todayWithoutTime;
+  }
+
+  isSelectedDepartureFlight(index: number): boolean {
+    return this.selectedIndex === index;
+  }
+
+  isSelectedReturnFlight(index: number): boolean {
+    return this.selectedReturnIndex === index;
   }
 }

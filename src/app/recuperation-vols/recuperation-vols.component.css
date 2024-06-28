@@ -10,9 +10,9 @@
 .dates-navigation {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 20px 0;
-  overflow-x: auto;
+  justify-content: space-between;
+  margin: 10px 0;
+  overflow-x: hidden;
   white-space: nowrap;
   width: 100%;
 }
@@ -21,14 +21,14 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
-  margin: 0 10px;
+  padding: 5px;
+  margin: 0 5px;
   background-color: #46696b94;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
   white-space: normal;
-  font-size: large;
+  font-size: medium;
   flex: 0 0 auto;
 }
 
@@ -37,18 +37,18 @@
 }
 
 .flight-details {
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 10px;
+  padding: 5px;
   background-color: #41aebecc;
   border-radius: 5px;
-  font-size: large;
+  font-size: medium;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s;
   white-space: normal;
-  width: 300px;
+  width: 250px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -57,7 +57,7 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .flight-duration {
@@ -67,12 +67,12 @@
 .select-button {
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 10px; /* Add margin to separate the button from other elements */
+  margin-top: 5px;
 }
 
 .select-button:hover {
@@ -80,13 +80,13 @@
 }
 
 .no-flights {
-  width: 300px;
+  width: 250px;
   margin-left: auto;
   margin-right: auto;
-  padding: 10px;
+  padding: 5px;
   background-color: #41aebecc;
   border-radius: 5px;
-  font-size: large;
+  font-size: medium;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +100,7 @@
   }
 
   .date-option {
-    margin: 10px 0;
+    margin: 5px 0;
     width: 100%;
   }
 
@@ -114,4 +114,16 @@
     padding: 10px;
     font-size: medium;
   }
+}
+
+.selectable-flight {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  background-color: #3e6870;
+}
+
+.selectable-flight.selected {
+  background-color: #7eadbce3;
 }
