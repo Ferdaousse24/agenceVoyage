@@ -17,22 +17,25 @@ export class VoyageurComponent {
   birthDate: string = '';
   passportNumber: string = '';
   passportNumberInvalid: boolean = false;
-  nationalities: string[] = ['Française', 'Canadienne', 'Américaine', 'Algérienne', 'Marocaine']; // Ajouter d'autres nationalités
+  nationalities: string[] = ['Française', 'Canadienne', 'Américaine', 'Algérienne', 'Marocaine'];
   filteredNationalities: string[] = [];
+  maxBirthDate: string = new Date().toISOString().split('T')[0]; // Définir la date maximale comme aujourd'hui
 
   onSubmit() {
-    // Logique pour gérer la soumission du formulaire
-    const voyageurInfo = {
-      title: this.title,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      nationality: this.nationality,
-      birthDate: this.birthDate,
-      passportNumber: this.passportNumber
-    };
+    this.passportNumberInvalid = !this.validatePassportNumber(this.passportNumber);
 
-    console.log('Informations Voyageur:', voyageurInfo);
-    // Vous pouvez également émettre ces détails au composant parent si nécessaire
+    if (!this.passportNumberInvalid) {
+      const voyageurInfo = {
+        title: this.title,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        nationality: this.nationality,
+        birthDate: this.birthDate,
+        passportNumber: this.passportNumber
+      };
+
+      console.log('Informations Voyageur:', voyageurInfo);
+    }
   }
 
   filterNationalities(event: Event) {
@@ -43,5 +46,10 @@ export class VoyageurComponent {
   selectNationality(nationality: string) {
     this.nationality = nationality;
     this.filteredNationalities = [];
+  }
+
+  validatePassportNumber(passportNumber: string): boolean {
+    const passportRegex = /^[A-Z]{2}\d{7}$/;
+    return passportRegex.test(passportNumber);
   }
 }

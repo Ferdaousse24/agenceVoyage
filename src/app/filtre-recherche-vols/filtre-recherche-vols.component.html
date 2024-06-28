@@ -94,9 +94,10 @@
     </app-recuperation-vols>
   </mat-tab>
 
-  <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="!isTab4Enabled">
+  <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="!isTab3Enabled">
     <app-voyageur (formValid)="enableTab4()"></app-voyageur>
   </mat-tab>
+  
 
   <mat-tab class="styleLabel" label="4-  Paiement" [disabled]="!isTab4Enabled">
     <div class="search-filter">

@@ -1,3 +1,4 @@
+<!-- Dans votre template voyageur.component.html -->
 <div class="voyageur-form">
   <h2>Informations Voyageur</h2>
   <form (ngSubmit)="onSubmit()" #voyageurForm="ngForm">
@@ -29,7 +30,7 @@
       </div>
       <div class="form-group">
         <label for="birthDate">Date de naissance *</label>
-        <input type="date" id="birthDate" class="form-control" [(ngModel)]="birthDate" name="birthDate" required>
+        <input type="date" id="birthDate" class="form-control" [(ngModel)]="birthDate" name="birthDate" [max]="maxBirthDate" required>
       </div>
       <div class="form-group">
         <label for="passportNumber">Numéro de passeport *</label>

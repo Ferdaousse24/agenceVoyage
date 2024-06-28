@@ -48,7 +48,7 @@
   
   .error-message {
     color: red;
-    font-size: 12px;
+    font-size: 23px;
   }
   
   .autocomplete-list {
@@ -70,5 +70,8 @@
   
   .autocomplete-list li:hover {
     background-color:rgb(57, 106, 108);
+  }
+  .mat-tab-label-active {
+    color: white !important;
   }
   

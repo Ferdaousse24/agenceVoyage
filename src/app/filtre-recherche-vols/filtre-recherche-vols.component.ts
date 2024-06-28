@@ -203,10 +203,23 @@ export class FiltreRechercheVolsComponent implements OnInit {
     });
   }
 
-  enableTab3() {
-    this.isTab3Enabled = true;
-    this.selectedIndex = 2; // L'index de l'onglet 3 ("Information voyageur")
+ // Dans votre composant filtre-recherche-vols.component.ts
+
+enableTab3() {
+  this.isTab3Enabled = true;
+  this.selectedIndex = 2; // L'index de l'onglet 3 ("Information voyageur")
+}
+
+// Appeler cette méthode lorsque les informations de vol sont sélectionnées
+onSelectedFlightChange(flight: any) {
+  console.log('Selected flight:', flight);
+  if (flight.available) {
+    this.enableTab3();
+  } else {
+    this.showError('Pas de vols disponibles pour cette date.');
   }
+}
+
 
   enableTab4() {
     this.isTab4Enabled = true;
@@ -214,14 +227,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.paymentMessage = "On va passer au paiement.";
   }
 
-  onSelectedFlightChange(flight: any) {
-    console.log('Selected flight:', flight);
-    if (flight.available) {
-      this.enableTab3();
-    } else {
-      this.showError('Pas de vols disponibles pour cette date.');
-    }
-  }
 
   onTabChange(event: any) {
     if (event.index === 0) {
