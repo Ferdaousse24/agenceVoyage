@@ -35,6 +35,8 @@ export class VoyageurComponent {
       };
 
       console.log('Informations Voyageur:', voyageurInfo);
+    } else {
+      console.log('Numéro de passeport invalide:', this.passportNumber);
     }
   }
 
@@ -50,6 +52,8 @@ export class VoyageurComponent {
 
   validatePassportNumber(passportNumber: string): boolean {
     const passportRegex = /^[A-Z]{2}\d{7}$/;
-    return passportRegex.test(passportNumber);
+    const isValid = passportRegex.test(passportNumber);
+    console.log(`Validating passport number: ${passportNumber}, isValid: ${isValid}`);
+    return isValid;
   }
 }
