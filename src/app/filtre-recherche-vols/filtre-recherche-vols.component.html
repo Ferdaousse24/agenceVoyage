@@ -52,9 +52,9 @@
               <input type="date" id="departureDate" class="form-control" [(ngModel)]="departureDate" name="departureDate" [min]="today" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" *ngIf="tripType === 'round-trip'">
               <label for="returnDate">Date d'arrivée *</label>
-              <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [disabled]="tripType === 'one-way'" [min]="departureDate" required>
+              <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [min]="departureDate" required>
             </div>
 
             <div class="form-group">
@@ -82,6 +82,7 @@
   <mat-tab class="styleLabel" label="2-  Choisir le vol" [disabled]="!isTab2Enabled">
     <app-recuperation-vols
       [flights]="flights"
+      [returnFlights]="returnFlights"
       [departure]="departure"
       [destination]="destination"
       [departureDate]="departureDate"
@@ -97,7 +98,6 @@
   <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="!isTab3Enabled">
     <app-voyageur (formValid)="enableTab4()"></app-voyageur>
   </mat-tab>
-  
 
   <mat-tab class="styleLabel" label="4-  Paiement" [disabled]="!isTab4Enabled">
     <div class="search-filter">
