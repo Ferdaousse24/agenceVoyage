@@ -2,7 +2,7 @@
 .search-filter {
   padding: 20px;
   border-radius: 5px;
-  max-width: 1200px; /* Ajustez la largeur maximale si nécessaire */
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -116,7 +116,6 @@ mat-form-field {
     margin: 0 0 15px 0;
   }
 }
-
 
 /* Appliquer la couleur blanche par défaut au texte des onglets */
 ::ng-deep .mat-mdc-tab .mdc-tab__text-label {

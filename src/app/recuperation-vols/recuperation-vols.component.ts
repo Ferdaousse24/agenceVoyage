@@ -23,6 +23,7 @@ interface Flight {
 })
 export class RecuperationVolsComponent implements OnChanges {
   @Input() flights: Flight[] = [];
+  @Input() returnFlights: Flight[] = []; // Ajouter l'entrée pour les vols de retour
   @Input() departure!: string;
   @Input() destination!: string;
   @Input() departureDate!: string;
@@ -31,18 +32,27 @@ export class RecuperationVolsComponent implements OnChanges {
   @Input() adults!: number;
   @Input() children!: number;
   @Output() selectedFlightChange = new EventEmitter<Flight>();
-  @Output() flightSelected = new EventEmitter<void>();  // Nouvel événement pour la sélection du vol
+  @Output() flightSelected = new EventEmitter<void>();
 
-  selectedFlight: Flight | null = null;
+  selectedDepartureFlight: Flight | null = null;
+  selectedReturnFlight: Flight | null = null;
   selectedIndex: number = 0;
+  selectedReturnIndex: number = 0;
   filteredFlights: Flight[] = [];
+  filteredReturnFlights: Flight[] = [];
   weekDaysFlights: Flight[] = [];
+  returnWeekDaysFlights: Flight[] = [];
   currentDate: Date = new Date();
+  returnCurrentDate: Date = new Date();
   today: Date = new Date();
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flights'] && changes['flights'].currentValue.length > 0) {
       this.filterFlights();
+    }
+
+    if (changes['returnFlights'] && changes['returnFlights'].currentValue.length > 0) {
+      this.filterReturnFlights();
     }
   }
 
@@ -50,7 +60,7 @@ export class RecuperationVolsComponent implements OnChanges {
     const flightsByDate: { [key: string]: Flight } = {};
 
     for (const flight of this.flights) {
-      const date = flight.date.split('T')[0]; // assuming date is in ISO format
+      const date = flight.date.split('T')[0];
 
       if (!flightsByDate[date] || flight.price < flightsByDate[date].price) {
         flightsByDate[date] = flight;
@@ -60,6 +70,22 @@ export class RecuperationVolsComponent implements OnChanges {
     const sortedFlights = Object.values(flightsByDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     this.filteredFlights = sortedFlights;
     this.updateWeekDaysFlights();
+  }
+
+  filterReturnFlights() {
+    const returnFlightsByDate: { [key: string]: Flight } = {};
+
+    for (const flight of this.returnFlights) {
+      const date = flight.date.split('T')[0];
+
+      if (!returnFlightsByDate[date] || flight.price < returnFlightsByDate[date].price) {
+        returnFlightsByDate[date] = flight;
+      }
+    }
+
+    const sortedReturnFlights = Object.values(returnFlightsByDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    this.filteredReturnFlights = sortedReturnFlights;
+    this.updateReturnWeekDaysFlights();
   }
 
   updateWeekDaysFlights() {
@@ -85,27 +111,65 @@ export class RecuperationVolsComponent implements OnChanges {
       }
     }
 
-    // Set initial selected flight
     if (this.weekDaysFlights.length > 0) {
       this.selectFlight(this.weekDaysFlights[0], 0);
     }
   }
 
+  updateReturnWeekDaysFlights() {
+    this.returnWeekDaysFlights = [];
+    const startDate = new Date(this.returnCurrentDate);
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startDate);
+      day.setDate(startDate.getDate() + i);
+      const dayString = day.toISOString().split('T')[0];
+      const flight = this.filteredReturnFlights.find(f => f.date.split('T')[0] === dayString);
+      if (flight) {
+        this.returnWeekDaysFlights.push(flight);
+      } else {
+        this.returnWeekDaysFlights.push({
+          departureCode: this.destination,
+          destinationCode: this.departure,
+          date: dayString,
+          price: NaN,
+          available: false,
+          stops: null
+        });
+      }
+    }
+
+    if (this.returnWeekDaysFlights.length > 0) {
+      this.selectReturnFlight(this.returnWeekDaysFlights[0], 0);
+    }
+  }
+
   selectFlight(flight: Flight, index: number) {
-    this.selectedFlight = flight;
+    this.selectedDepartureFlight = flight;
     this.selectedIndex = index;
     this.selectedFlightChange.emit(flight);
   }
 
+  selectReturnFlight(flight: Flight, index: number) {
+    this.selectedReturnFlight = flight;
+    this.selectedReturnIndex = index;
+    this.selectedFlightChange.emit(flight);
+  }
+
   onFlightSelected() {
-    if (this.selectedFlight) {
-      this.flightSelected.emit();  // Émettre l'événement de sélection du vol
+    if (this.selectedDepartureFlight && (this.tripType === 'one-way' || this.selectedReturnFlight)) {
+      this.flightSelected.emit();
     }
   }
 
   navigateDays(step: number) {
     this.currentDate.setDate(this.currentDate.getDate() + step);
     this.updateWeekDaysFlights();
+  }
+
+  navigateReturnDays(step: number) {
+    this.returnCurrentDate.setDate(this.returnCurrentDate.getDate() + step);
+    this.updateReturnWeekDaysFlights();
   }
 
   isAtStartDate(): boolean {

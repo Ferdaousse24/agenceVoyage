@@ -10,17 +10,45 @@
     </div>
     <button class="nav-button" (click)="navigateDays(7)">&gt;</button>
   </div>
-  <div *ngIf="selectedFlight && selectedFlight.available" class="flight-details">
+  <div *ngIf="selectedDepartureFlight && selectedDepartureFlight.available" class="flight-details">
     <div class="flight-time">
-      <p>{{ selectedFlight.departureTime | date: 'HH:mm' }}</p>
-      <span class="flight-duration">{{ selectedFlight.duration }}</span>
-      <p>{{ selectedFlight.arrivalTime | date: 'HH:mm' }}</p>
+      <p>{{ selectedDepartureFlight.departureTime | date: 'HH:mm' }}</p>
+      <span class="flight-duration">{{ selectedDepartureFlight.duration }}</span>
+      <p>{{ selectedDepartureFlight.arrivalTime | date: 'HH:mm' }}</p>
     </div>
     <p>{{ departure }} / {{ destination }}</p>
-    <p>{{ selectedFlight.stops === 0 ? 'Vol direct' : selectedFlight.stops + ' escale(s)' }}</p>
-    <button class="select-button" (click)="onFlightSelected()">Depuis EUR {{ selectedFlight.price }}</button>
+    <p>{{ selectedDepartureFlight.stops === 0 ? 'Vol direct' : selectedDepartureFlight.stops + ' escale(s)' }}</p>
   </div>
-  <div *ngIf="selectedFlight && !selectedFlight.available" class="flight-details">
+  <div *ngIf="selectedDepartureFlight && !selectedDepartureFlight.available" class="no-flights">
     <p>Pas de vols disponibles pour cette date.</p>
   </div>
+
+  <div *ngIf="tripType === 'round-trip'">
+    <h2>Sélectionnez votre vol de retour de {{ destination }} vers {{ departure }}</h2>
+    <div class="dates-navigation">
+      <button class="nav-button" (click)="navigateReturnDays(-7)" [disabled]="isAtStartDate()">&lt;</button>
+      <div *ngFor="let flight of returnWeekDaysFlights; let i = index" class="date-option" [class.selected]="i === selectedReturnIndex" (click)="selectReturnFlight(flight, i)">
+        <p>{{ flight.departureCode }} &rarr; {{ flight.destinationCode }}</p>
+        <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
+        <p>{{ flight.available ? 'EUR ' + flight.price + ' +' : 'pas de vols' }}</p>
+        <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops !== null ? flight.stops + ' escale(s)' : 'N/A' }}</p>
+      </div>
+      <button class="nav-button" (click)="navigateReturnDays(7)">&gt;</button>
+    </div>
+    <div *ngIf="selectedReturnFlight && selectedReturnFlight.available" class="flight-details">
+      <div class="flight-time">
+        <p>{{ selectedReturnFlight.departureTime | date: 'HH:mm' }}</p>
+        <span class="flight-duration">{{ selectedReturnFlight.duration }}</span>
+        <p>{{ selectedReturnFlight.arrivalTime | date: 'HH:mm' }}</p>
+      </div>
+      <p>{{ destination }} / {{ departure }}</p>
+      <p>{{ selectedReturnFlight.stops === 0 ? 'Vol direct' : selectedReturnFlight.stops + ' escale(s)' }}</p>
+    </div>
+    <div *ngIf="selectedReturnFlight && !selectedReturnFlight.available" class="no-flights">
+      <p>Pas de vols disponibles pour cette date.</p>
+    </div>
+  </div>
+
+  <button *ngIf="tripType === 'one-way' && selectedDepartureFlight" class="select-button" (click)="onFlightSelected()">Depuis EUR {{ selectedDepartureFlight.price }}</button>
+  <button *ngIf="tripType === 'round-trip' && selectedDepartureFlight && selectedReturnFlight" class="select-button" (click)="onFlightSelected()">Depuis EUR {{ selectedReturnFlight.price }}</button>
 </div>
