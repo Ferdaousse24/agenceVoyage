@@ -94,13 +94,13 @@
     </app-recuperation-vols>
   </mat-tab>
 
-  <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="true">
-    <app-voyageur></app-voyageur>
+  <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="!isTab4Enabled">
+    <app-voyageur (formValid)="enableTab4()"></app-voyageur>
   </mat-tab>
 
-  <mat-tab class="styleLabel" label="4-  Paiement" [disabled]="true">
+  <mat-tab class="styleLabel" label="4-  Paiement" [disabled]="!isTab4Enabled">
     <div class="search-filter">
-      Contenu pour le paiement.
+      <p>{{ paymentMessage }}</p>
     </div>
   </mat-tab>
 </mat-tab-group>

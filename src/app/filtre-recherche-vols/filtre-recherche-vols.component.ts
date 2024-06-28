@@ -35,6 +35,8 @@ import { AmadeusService } from '../services/amadeus.service';
 export class FiltreRechercheVolsComponent implements OnInit {
   selectedIndex: number = 0;
   isTab2Enabled: boolean = false;
+  isTab3Enabled: boolean = false; // Nouvelle propriété pour l'onglet 3
+  isTab4Enabled: boolean = false; // Nouvelle propriété pour l'onglet 4
   flights: any[] = [];
   departure: string = '';
   destination: string = '';
@@ -52,6 +54,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   today: string = new Date().toISOString().split('T')[0];
   departureError: string = '';
   destinationError: string = '';
+  paymentMessage: string = ''; // Nouvelle propriété
 
   constructor(private snackBar: MatSnackBar, private amadeusService: AmadeusService) {}
 
@@ -183,6 +186,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
           available: true
         };
       });
+
       this.isTab2Enabled = true;
       this.selectedIndex = 1;
     } catch (error) {
@@ -200,20 +204,35 @@ export class FiltreRechercheVolsComponent implements OnInit {
   }
 
   enableTab3() {
+    this.isTab3Enabled = true;
     this.selectedIndex = 2; // L'index de l'onglet 3 ("Information voyageur")
+  }
+
+  enableTab4() {
+    this.isTab4Enabled = true;
+    this.selectedIndex = 3; // L'index de l'onglet 4 ("Paiement")
+    this.paymentMessage = "On va passer au paiement.";
   }
 
   onSelectedFlightChange(flight: any) {
     console.log('Selected flight:', flight);
-    this.enableTab3();
+    if (flight.available) {
+      this.enableTab3();
+    } else {
+      this.showError('Pas de vols disponibles pour cette date.');
+    }
   }
 
   onTabChange(event: any) {
     if (event.index === 0) {
       this.isTab2Enabled = false;
+      this.isTab3Enabled = false;
+      this.isTab4Enabled = false; // Désactiver les onglets 3 et 4 lors du retour à l'onglet 1
+    } else if (event.index === 1) {
+      this.isTab3Enabled = false;
+      this.isTab4Enabled = false; // Désactiver l'onglet 4 lors du retour à l'onglet 2
     }
   }
-
   cities = [
     { code: 'GVA', name: 'Geneve, Suisse' },
     { code: 'ZRH', name: 'Zurich, Suisse' },
