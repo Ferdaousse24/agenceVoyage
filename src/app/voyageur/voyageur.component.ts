@@ -10,25 +10,38 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./voyageur.component.css']
 })
 export class VoyageurComponent {
+  title: string = '';
   firstName: string = '';
   lastName: string = '';
-  email: string = '';
-  phone: string = '';
-  passportNumber: string = '';
   nationality: string = '';
+  birthDate: string = '';
+  passportNumber: string = '';
+  passportNumberInvalid: boolean = false;
+  nationalities: string[] = ['Française', 'Canadienne', 'Américaine', 'Algérienne', 'Marocaine']; // Ajouter d'autres nationalités
+  filteredNationalities: string[] = [];
 
   onSubmit() {
     // Logique pour gérer la soumission du formulaire
     const voyageurInfo = {
+      title: this.title,
       firstName: this.firstName,
       lastName: this.lastName,
-      email: this.email,
-      phone: this.phone,
-      passportNumber: this.passportNumber,
-      nationality: this.nationality
+      nationality: this.nationality,
+      birthDate: this.birthDate,
+      passportNumber: this.passportNumber
     };
 
     console.log('Informations Voyageur:', voyageurInfo);
     // Vous pouvez également émettre ces détails au composant parent si nécessaire
+  }
+
+  filterNationalities(event: Event) {
+    const input = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredNationalities = this.nationalities.filter(n => n.toLowerCase().includes(input));
+  }
+
+  selectNationality(nationality: string) {
+    this.nationality = nationality;
+    this.filteredNationalities = [];
   }
 }
