@@ -12,7 +12,7 @@ import { map, startWith } from 'rxjs/operators';
 import { VoyageurComponent } from '../voyageur/voyageur.component';
 import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vols.component';
 import { AmadeusService } from '../services/amadeus.service';
-
+import { PaiementComponent } from '../paiement/paiement.component';
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
@@ -27,7 +27,8 @@ import { AmadeusService } from '../services/amadeus.service';
     MatAutocompleteModule,
     MatSnackBarModule,
     VoyageurComponent,
-    RecuperationVolsComponent
+    RecuperationVolsComponent,
+    PaiementComponent
   ],
   templateUrl: './filtre-recherche-vols.component.html',
   styleUrls: ['./filtre-recherche-vols.component.css']
@@ -38,7 +39,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   isTab3Enabled: boolean = false;
   isTab4Enabled: boolean = false;
   flights: any[] = [];
-  returnFlights: any[] = []; // Ajouter cette ligne pour initialiser returnFlights
+  returnFlights: any[] = []; 
   departure: string = '';
   destination: string = '';
   departureDate: string = '';
@@ -188,7 +189,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
         };
       });
 
-      // Ajouter ici pour gérer les vols de retour
       if (this.tripType === 'round-trip') {
         const returnFlightOffers = await this.amadeusService.searchFlights(this.destination, this.departure, this.returnDate);
         console.log('API Response (Retour):', returnFlightOffers);
@@ -237,8 +237,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
   enableTab4() {
     this.isTab4Enabled = true;
     this.selectedIndex = 3;
+    this.paymentMessage = "Veuillez cliquer sur le bouton ci-dessous pour procéder au paiement.";
   }
-  
 
   onSelectedFlightChange(flight: any) {
     console.log('Selected flight:', flight);
@@ -257,11 +257,10 @@ export class FiltreRechercheVolsComponent implements OnInit {
     } else if (event.index === 1) {
       this.isTab3Enabled = false;
       this.isTab4Enabled = false;
-    } else if (event.index === 3) {
-      // Activer la redirection automatique vers le lien de paiement
-      window.location.href = 'https://pay-pro.monetico.fr/izysafar/paiement';
     }
   }
+
+
   cities = [
     { code: 'GVA', name: 'Geneve, Suisse' },
     { code: 'ZRH', name: 'Zurich, Suisse' },
