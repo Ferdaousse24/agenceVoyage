@@ -40,7 +40,7 @@
     class="select-button" 
     (click)="onFlightSelected()" 
     [disabled]="!selectedDepartureFlight || !selectedDepartureFlight.available">
-    Depuis EUR {{ selectedDepartureFlight.price }}
+    Depuis EUR {{ selectedDepartureFlight.price + 40 }}
   </button>
 
   <button 

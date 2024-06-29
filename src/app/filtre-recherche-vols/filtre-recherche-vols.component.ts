@@ -13,6 +13,7 @@ import { VoyageurComponent } from '../voyageur/voyageur.component';
 import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vols.component';
 import { AmadeusService } from '../services/amadeus.service';
 import { PaiementComponent } from '../paiement/paiement.component';
+
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
@@ -179,7 +180,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
           departureCode: departureSegment.departure.iataCode,
           destinationCode: arrivalSegment.arrival.iataCode,
           carrier: offer.validatingAirlineCodes[0],
-          price: offer.price.total,
+          price: parseFloat(offer.price.total), // Ensure price is a number
           departureTime: departureSegment.departure.at,
           arrivalTime: arrivalSegment.arrival.at,
           duration: offer.itineraries[0].duration,
@@ -202,7 +203,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
             departureCode: departureSegment.departure.iataCode,
             destinationCode: arrivalSegment.arrival.iataCode,
             carrier: offer.validatingAirlineCodes[0],
-            price: offer.price.total,
+            price: parseFloat(offer.price.total), // Ensure price is a number
             departureTime: departureSegment.departure.at,
             arrivalTime: arrivalSegment.arrival.at,
             duration: offer.itineraries[0].duration,
@@ -214,7 +215,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
       }
 
       this.isTab2Enabled = true;
-      this.selectedIndex = 1;
+      this.selectedIndex = 1; // Directly go to "Choisir le vol" tab
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
@@ -242,11 +243,10 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   onSelectedFlightChange(flight: any) {
     console.log('Selected flight:', flight);
-    if (flight.available) {
-      this.enableTab3();
-    } else {
-      this.showError('Pas de vols disponibles pour cette date.');
-    }
+  }
+
+  onFlightSelected() {
+    this.enableTab3(); // Only enable and navigate to tab 3 when the "Total" button is clicked
   }
 
   onTabChange(event: any) {
@@ -259,8 +259,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.isTab4Enabled = false;
     }
   }
-
-
   cities = [
     { code: 'GVA', name: 'Geneve, Suisse' },
     { code: 'ZRH', name: 'Zurich, Suisse' },

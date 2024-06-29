@@ -5,32 +5,34 @@
 </div>
 
 <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onTabChange($event)">
-  <mat-tab class="styleLabel" label="1-  Réservation">
+  <mat-tab label="1- Réservation">
     <div class="search-filter">
       <form (ngSubmit)="onSubmit()" #flightForm="ngForm">
         <div class="form-row">
           <div class="form-group">
             <label for="departure">Depuis</label>
             <mat-form-field>
-              <input type="text" placeholder="Search" matInput [formControl]="departureControl" [matAutocomplete]="auto" name="departure" id="depart" required>
+              <input type="text" placeholder="Search" matInput [formControl]="departureControl" [matAutocomplete]="auto" name="departure" required>
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onDepartureSelected($event)">
                 <mat-option *ngFor="let city of filteredOptions | async" [value]="city.name">
                   {{ city.name }}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
+            <div *ngIf="departureError" class="error-message">{{ departureError }}</div>
           </div>
 
           <div class="form-group">
             <label for="destination">Vers</label>
             <mat-form-field>
-              <input type="text" placeholder="Search" matInput [formControl]="destinationControl" [matAutocomplete]="autoDest" name="destination" id="destination" required>
+              <input type="text" placeholder="Search" matInput [formControl]="destinationControl" [matAutocomplete]="autoDest" name="destination" required>
               <mat-autocomplete #autoDest="matAutocomplete" (optionSelected)="onDestinationSelected($event)">
                 <mat-option *ngFor="let city of filteredDestinationOptions | async" [value]="city.name">
                   {{ city.name }}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
+            <div *ngIf="destinationError" class="error-message">{{ destinationError }}</div>
           </div>      
 
           <div class="form-group trip-type">
@@ -79,7 +81,7 @@
     </div>
   </mat-tab>
 
-  <mat-tab class="styleLabel" label="2-  Choisir le vol" [disabled]="!isTab2Enabled">
+  <mat-tab label="2- Choisir le vol" [disabled]="!isTab2Enabled">
     <app-recuperation-vols
       [flights]="flights"
       [returnFlights]="returnFlights"
@@ -95,11 +97,11 @@
     </app-recuperation-vols>
   </mat-tab>
 
-  <mat-tab class="styleLabel" label="3-  Information voyageur" [disabled]="!isTab3Enabled">
+  <mat-tab label="3- Information voyageur" [disabled]="!isTab3Enabled">
     <app-voyageur (formValid)="enableTab4()"></app-voyageur>
   </mat-tab>
 
-  <mat-tab class="styleLabel" label="4-  Paiement" [disabled]="!isTab4Enabled">
+  <mat-tab label="4- Paiement" [disabled]="!isTab4Enabled">
     <app-paiement></app-paiement>
   </mat-tab>
 </mat-tab-group>

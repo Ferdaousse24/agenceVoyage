@@ -73,7 +73,6 @@ export class RecuperationVolsComponent implements OnChanges {
     const sortedFlights = Object.values(flightsByDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     this.filteredFlights = sortedFlights;
     this.updateWeekDaysFlights();
-    this.scrollToSelectedDate();
   }
 
   filterReturnFlights() {
@@ -90,7 +89,6 @@ export class RecuperationVolsComponent implements OnChanges {
     const sortedReturnFlights = Object.values(returnFlightsByDate).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     this.filteredReturnFlights = sortedReturnFlights;
     this.updateReturnWeekDaysFlights();
-    this.scrollToSelectedDate();
   }
 
   updateWeekDaysFlights() {
@@ -117,7 +115,8 @@ export class RecuperationVolsComponent implements OnChanges {
     }
 
     if (this.weekDaysFlights.length > 0) {
-      this.selectFlight(this.weekDaysFlights[0], 0);
+      const selectedFlightIndex = this.weekDaysFlights.findIndex(f => f.date.split('T')[0] === this.departureDate.split('T')[0]);
+      this.selectFlight(this.weekDaysFlights[selectedFlightIndex] || this.weekDaysFlights[0], selectedFlightIndex !== -1 ? selectedFlightIndex : 0);
     }
   }
 
@@ -145,7 +144,8 @@ export class RecuperationVolsComponent implements OnChanges {
     }
 
     if (this.returnWeekDaysFlights.length > 0) {
-      this.selectReturnFlight(this.returnWeekDaysFlights[0], 0);
+      const selectedReturnFlightIndex = this.returnWeekDaysFlights.findIndex(f => f.date.split('T')[0] === this.returnDate.split('T')[0]);
+      this.selectReturnFlight(this.returnWeekDaysFlights[selectedReturnFlightIndex] || this.returnWeekDaysFlights[0], selectedReturnFlightIndex !== -1 ? selectedReturnFlightIndex : 0);
     }
   }
 
@@ -188,9 +188,9 @@ export class RecuperationVolsComponent implements OnChanges {
     let totalPrice = 0;
     
     if (this.selectedDepartureFlight && this.selectedReturnFlight) {
-      totalPrice = Number(this.selectedDepartureFlight.price) + Number(this.selectedReturnFlight.price);
+      totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + parseFloat(this.selectedReturnFlight.price as any) + 40;
     } else if (this.selectedDepartureFlight) {
-      totalPrice = Number(this.selectedDepartureFlight.price);
+      totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + 40;
     }
     
     return totalPrice;
