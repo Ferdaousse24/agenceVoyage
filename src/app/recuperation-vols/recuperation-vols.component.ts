@@ -48,14 +48,22 @@ export class RecuperationVolsComponent implements OnChanges {
   selectedDate: string = '';
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['departureDate'] && changes['departureDate'].currentValue) {
+      this.currentDate = new Date(this.departureDate);
+      this.updateWeekDaysFlights();
+    }
+
+    if (changes['returnDate'] && changes['returnDate'].currentValue) {
+      this.returnCurrentDate = new Date(this.returnDate);
+      this.updateReturnWeekDaysFlights();
+    }
+
     if (changes['flights'] && changes['flights'].currentValue.length > 0) {
       this.filterFlights();
-      this.selectedDate = this.departureDate.split('T')[0]; // Set the selected date to departureDate
     }
 
     if (changes['returnFlights'] && changes['returnFlights'].currentValue.length > 0) {
       this.filterReturnFlights();
-      this.selectedDate = this.returnDate.split('T')[0]; // Set the selected date to returnDate
     }
   }
 
@@ -118,6 +126,8 @@ export class RecuperationVolsComponent implements OnChanges {
       const selectedFlightIndex = this.weekDaysFlights.findIndex(f => f.date.split('T')[0] === this.departureDate.split('T')[0]);
       this.selectFlight(this.weekDaysFlights[selectedFlightIndex] || this.weekDaysFlights[0], selectedFlightIndex !== -1 ? selectedFlightIndex : 0);
     }
+
+    this.scrollToSelectedDate();
   }
 
   updateReturnWeekDaysFlights() {
@@ -147,6 +157,17 @@ export class RecuperationVolsComponent implements OnChanges {
       const selectedReturnFlightIndex = this.returnWeekDaysFlights.findIndex(f => f.date.split('T')[0] === this.returnDate.split('T')[0]);
       this.selectReturnFlight(this.returnWeekDaysFlights[selectedReturnFlightIndex] || this.returnWeekDaysFlights[0], selectedReturnFlightIndex !== -1 ? selectedReturnFlightIndex : 0);
     }
+
+    this.scrollToSelectedDate();
+  }
+
+  scrollToSelectedDate() {
+    setTimeout(() => {
+      const selectedElement = document.getElementById(`flight-${this.selectedDate}`);
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 0);
   }
 
   selectFlight(flight: Flight, index: number) {
@@ -194,15 +215,6 @@ export class RecuperationVolsComponent implements OnChanges {
     }
     
     return totalPrice;
-  }
-
-  scrollToSelectedDate() {
-    setTimeout(() => {
-      const selectedElement = document.getElementById(`flight-${this.selectedDate}`);
-      if (selectedElement) {
-        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 0);
   }
 
   navigateDays(step: number) {

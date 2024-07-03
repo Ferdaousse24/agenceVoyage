@@ -1,19 +1,23 @@
+/* app.component.css */
+
 html, body {
-    height: 100%;
-    margin: 0;
-  }
-  
-  .app-background {
-    background-image: url('/assets/background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .router-outlet-container {
-    flex: 1;
-  }
-  
+  height: 100%;
+  margin: 0;
+}
+
+.main-container {
+  background-image: url('/assets/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.router-outlet-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}

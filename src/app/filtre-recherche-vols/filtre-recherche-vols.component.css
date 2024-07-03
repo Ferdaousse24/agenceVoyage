@@ -1,10 +1,14 @@
-/* Styles généraux */
+/* filtre-recherche-vols.component.css */
+
 .search-filter {
   padding: 20px;
   border-radius: 5px;
   max-width: 1200px;
   margin: auto;
+  position: relative;
+  z-index: 1000 !important; 
 }
+
 
 .form-row {
   display: flex;

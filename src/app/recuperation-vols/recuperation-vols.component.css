@@ -1,3 +1,5 @@
+/* recuperation-vols.component.css */
+
 .flight-selection {
   display: flex;
   flex-direction: column;
@@ -127,4 +129,12 @@
 
 .selectable-flight.selected {
   background-color: #7eadbce3;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
 }

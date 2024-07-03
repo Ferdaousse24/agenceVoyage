@@ -265,6 +265,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.isTab4Enabled = false;
     }
   }
+
   cities = [
     { code: 'GVA', name: 'Geneve, Suisse' },
     { code: 'ZRH', name: 'Zurich, Suisse' },
