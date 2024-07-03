@@ -143,6 +143,12 @@ export class FiltreRechercheVolsComponent implements OnInit {
       return;
     }
 
+    if (!destinationCity) {
+      this.destinationError = 'La ville de destination n\'est pas valide.';
+      this.showError(this.destinationError);
+      return;
+    }
+
     if (this.departure === this.destination) {
       this.destinationError = 'La ville de départ ne peut pas être la même que la ville d\'arrivée.';
       this.showError(this.destinationError);
@@ -168,7 +174,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.isLoading = true;
 
     try {
-      const flightOffers = await this.amadeusService.searchFlights(this.departure, this.destination, this.departureDate);
+      const flightOffers = await this.amadeusService.searchFlights(this.departure, this.destination, this.departureDate, this.adults);
       console.log('API Response:', flightOffers);
 
       this.flights = flightOffers.data.map((offer: any) => {
@@ -191,7 +197,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
       });
 
       if (this.tripType === 'round-trip') {
-        const returnFlightOffers = await this.amadeusService.searchFlights(this.destination, this.departure, this.returnDate);
+        const returnFlightOffers = await this.amadeusService.searchFlights(this.destination, this.departure, this.returnDate, this.adults);
         console.log('API Response (Retour):', returnFlightOffers);
 
         this.returnFlights = returnFlightOffers.data.map((offer: any) => {
