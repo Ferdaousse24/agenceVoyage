@@ -14,14 +14,14 @@ export class AmadeusService {
 
   private async getToken() {
     try {
-      const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', {
+      const response = await axios.post('/api/v1/security/oauth2/token', {
         grant_type: 'client_credentials',
         client_id: environement.amadeus.clientId,
         client_secret: environement.amadeus.clientSecret
       }, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        }
       });
 
       this.token = response.data.access_token;
@@ -31,22 +31,22 @@ export class AmadeusService {
     }
   }
 
-  async searchFlights(departure: string, destination: string, departureDate: string) {
+  async searchFlights(departure: string, destination: string, departureDate: string, adults: number) {
     if (!this.token) {
       throw new Error('No token available');
     }
 
-    const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
+    const response = await axios.get('/api/v2/shopping/flight-offers', {
       params: {
         originLocationCode: departure,
         destinationLocationCode: destination,
         departureDate: departureDate,
-        adults: 1,
-        max: 7,
+        adults: adults,
+        max: 1,
       },
       headers: {
         Authorization: `Bearer ${this.token}`,
-      },
+      }
     });
 
     return response.data;
