@@ -16,7 +16,7 @@
     <button class="nav-button" (click)="navigateDays(7)">&gt;</button>
   </div>
 
-  <div *ngIf="tripType === 'round-trip'">
+  <div *ngIf="tripType === 'round-trip'" class="flight-selection">
     <h2>Sélectionnez votre vol de retour de {{ destination }} vers {{ departure }}</h2>
     <div class="dates-navigation">
       <button class="nav-button" (click)="navigateReturnDays(-7)" [disabled]="isAtStartDate()">&lt;</button>
