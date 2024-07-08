@@ -1,12 +1,12 @@
 /* recuperation-vols.component.css */
 
 .flight-selection {
-  display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
+  flex: 1;
 }
 
 .dates-navigation {
@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   margin: 10px 0;
-  overflow-x: auto; /* Permettre le défilement horizontal */
+  overflow-x: auto;
   white-space: nowrap;
   width: 100%;
 }
@@ -97,14 +97,15 @@
 
 @media (max-width: 600px) {
   .dates-navigation {
-    flex-direction: row; /* Changer pour aligner horizontalement */
-    flex-wrap: nowrap; /* Empêcher le passage à la ligne */
-    overflow-x: auto; /* Activer le défilement horizontal */
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
   }
 
   .date-option {
     margin: 5px;
-    width: auto; /* Laisser la taille s'ajuster automatiquement */
+    width: auto;
   }
 
   .flight-details,
@@ -117,24 +118,30 @@
     padding: 10px;
     font-size: medium;
   }
-}
 
-.selectable-flight {
-  cursor: pointer;
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 5px;
-  background-color: #3e6870;
-}
+  .selectable-flight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #3e6870;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    width: calc(100% - 10px); /* Ajustement pour s'assurer que les éléments prennent toute la largeur en mode mobile */
+    box-sizing: border-box; /* S'assure que le padding est inclus dans la largeur */
+  }
 
-.selectable-flight.selected {
-  background-color: #7eadbce3;
-}
+  .selectable-flight.selected {
+    background-color: #7eadbce3;
+  }
 
-.nav-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: white;
+  .nav-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+  }
 }
