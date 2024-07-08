@@ -14,7 +14,7 @@ export class AmadeusService {
 
   private async getToken() {
     try {
-      const response = await axios.post('/api/v1/security/oauth2/token', {
+      const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', {
         grant_type: 'client_credentials',
         client_id: environement.amadeus.clientId,
         client_secret: environement.amadeus.clientSecret
@@ -36,7 +36,7 @@ export class AmadeusService {
       throw new Error('No token available');
     }
 
-    const response = await axios.get('/api/v2/shopping/flight-offers', {
+    const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
       params: {
         originLocationCode: departure,
         destinationLocationCode: destination,
@@ -50,5 +50,30 @@ export class AmadeusService {
     });
 
     return response.data;
+  }
+
+  async searchFlightsForMultipleDates(departure: string, destination: string, dates: string[], adults: number) {
+    if (!this.token) {
+      throw new Error('No token available');
+    }
+
+    const requests = dates.map(date => 
+      axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
+        params: {
+          originLocationCode: departure,
+          destinationLocationCode: destination,
+          departureDate: date,
+          adults: adults,
+          max: 1,
+        },
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        }
+      })
+    );
+
+    const responses = await Promise.all(requests);
+
+    return responses.map(response => response.data);
   }
 }
