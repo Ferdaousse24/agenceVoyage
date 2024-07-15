@@ -55,7 +55,7 @@
             </div>
 
             <div class="form-group" *ngIf="tripType === 'round-trip'">
-              <label for="returnDate">Date d'arrivée *</label>
+              <label for="returnDate">Date de retour *</label>
               <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [min]="departureDate" required>
             </div>
 
@@ -66,7 +66,7 @@
 
             <div class="form-group">
               <label for="children">Nombre d'enfants</label>
-              <input type="number" id="children" class="form-control" [(ngModel)]="children" name="children" min="0" required>
+              <input type="number" id="children" class="form-control" [(ngModel)]="children" name="children" min="0">
             </div>
           </div>
         </div>
@@ -98,7 +98,14 @@
   </mat-tab>
 
   <mat-tab label="3- Information voyageur" [disabled]="!isTab3Enabled">
-    <app-voyageur (formValid)="enableTab4()"></app-voyageur>
+    <app-voyageur 
+      [departure]="departure"
+      [destination]="destination"
+      [dateDeparture]="departureDate"
+      [dateRetour]="returnDate"
+      [tripType]="tripType"
+      (formValid)="enableTab4()">
+    </app-voyageur>
   </mat-tab>
 
   <mat-tab label="4- Paiement" [disabled]="!isTab4Enabled">
