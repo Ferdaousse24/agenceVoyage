@@ -13,7 +13,6 @@ import { VoyageurComponent } from '../voyageur/voyageur.component';
 import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vols.component';
 import { AmadeusService } from '../services/amadeus.service';
 import { PaiementComponent } from '../paiement/paiement.component';
-
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
@@ -85,6 +84,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
   }
 
   filterOptions(value: string, type: string): any[] {
+    if (!value) {
+      return [];
+    }
     const filterValue = value.toLowerCase();
     return this.cities.filter(option => {
       const match = option.name.toLowerCase().includes(filterValue);
@@ -97,6 +99,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
   }
 
   getCityCode(cityName: string): string {
+    if (!cityName) {
+      return '';
+    }
     const city = this.cities.find(c => c.name === cityName);
     return city ? city.code : '';
   }
@@ -222,6 +227,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
       this.isTab2Enabled = true;
       this.selectedIndex = 1; // Directly go to "Choisir le vol" tab
+
+      console.log('Selected flight:', this.flights);
+      console.log('Selected return flight:', this.returnFlights);
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');

@@ -108,8 +108,14 @@ export class VoyageurComponent implements OnInit {
   }
 
   filterNationalities(event: Event) {
-    const input = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredNationalities = this.nationalities.filter(n => n.toLowerCase().includes(input));
+    const input = (event.target as HTMLInputElement).value;
+    if (input) {
+      this.filteredNationalities = this.nationalities.filter(n =>
+        n.toLowerCase().includes(input.toLowerCase())
+      );
+    } else {
+      this.filteredNationalities = [];
+    }
   }
 
   selectNationality(nationality: string) {
