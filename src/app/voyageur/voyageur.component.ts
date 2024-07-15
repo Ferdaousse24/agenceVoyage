@@ -2,6 +2,7 @@ import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AirtableService } from '../services/airtable.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-voyageur',
@@ -13,22 +14,22 @@ import { AirtableService } from '../services/airtable.service';
 export class VoyageurComponent implements OnInit {
   @Input() departure!: string;
   @Input() destination!: string;
-  @Input() dateDeparture!: string; 
-  @Input() dateRetour!: string; 
-  @Input() tripType!: string; 
+  @Input() dateDeparture!: string; // Utilisation de string pour la liaison avec l'input date
+  @Input() dateRetour!: string; // Utilisation de string pour la liaison avec l'input date
+  @Input() tripType!: string; // Ajout de l'input tripType
   title: string = '';
   firstName: string = '';
   lastName: string = '';
   nationality: string = '';
   birthDate: string = '';
   passportNumber: string = '';
-  phoneNumber: string = ''; 
-  email: string = ''; 
-  emailInvalid: boolean = false; 
+  phoneNumber: string = ''; // Ajout du champ phoneNumber
+  email: string = ''; // Ajout du champ email
+  emailInvalid: boolean = false; // Ajout du flag pour email invalide
   passportNumberInvalid: boolean = false;
   nationalities: string[] = ['Française', 'Canadienne', 'Américaine', 'Algérienne', 'Marocaine'];
   filteredNationalities: string[] = [];
-  maxBirthDate: string = new Date().toISOString().split('T')[0];
+  maxBirthDate: string = new Date().toISOString().split('T')[0]; // Définir la date maximale comme aujourd'hui
 
   @Output() formValid = new EventEmitter<void>();
 
@@ -45,8 +46,9 @@ export class VoyageurComponent implements OnInit {
     if (!this.passportNumberInvalid && !this.emailInvalid) {
       const formattedDateDeparture = this.dateDeparture ? this.formatDate(new Date(this.dateDeparture)) : '';
       const formattedDateRetour = (this.tripType === 'round-trip' && this.dateRetour) ? this.formatDate(new Date(this.dateRetour)) : null;
+      const formattedBirthDate = this.birthDate ? this.formatDate(new Date(this.birthDate)) : '';
 
-      if (!formattedDateDeparture || (this.tripType === 'round-trip' && !formattedDateRetour)) {
+      if (!formattedDateDeparture || (this.tripType === 'round-trip' && !formattedDateRetour) || !formattedBirthDate) {
         console.error('Dates invalides');
         return;
       }
@@ -55,7 +57,7 @@ export class VoyageurComponent implements OnInit {
         records: [
           {
             fields: {
-              userId: "FSSDS189",
+              userId: uuidv4(), // Génération d'un UUID unique
               VilleDepart: this.departure,
               villeDestination: this.destination,
               dateDepart: formattedDateDeparture,
@@ -65,10 +67,10 @@ export class VoyageurComponent implements OnInit {
               prenom: this.firstName,
               nom: this.lastName,
               nationalite: this.nationality,
-              dateNaissance: this.formatDate(new Date(this.birthDate)),
+              dateNaissance: formattedBirthDate,
               numeroPasseport: this.passportNumber,
-              telephone: this.phoneNumber, 
-              email: this.email 
+              telephone: this.phoneNumber, // Ajout du champ telephone
+              email: this.email // Ajout du champ email
             }
           }
         ]
