@@ -57,7 +57,7 @@ export class VoyageurComponent implements OnInit {
         records: [
           {
             fields: {
-              userId: uuidv4(), // Génération d'un UUID unique
+              userId: uuidv4(), 
               VilleDepart: this.departure,
               villeDestination: this.destination,
               dateDepart: formattedDateDeparture,
