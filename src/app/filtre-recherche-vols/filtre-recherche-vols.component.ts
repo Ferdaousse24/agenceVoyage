@@ -13,6 +13,7 @@ import { VoyageurComponent } from '../voyageur/voyageur.component';
 import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vols.component';
 import { AmadeusService } from '../services/amadeus.service';
 import { PaiementComponent } from '../paiement/paiement.component';
+
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
@@ -179,54 +180,16 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.isLoading = true;
 
     try {
-      const flightOffers = await this.amadeusService.searchFlights(this.departure, this.destination, this.departureDate, this.adults);
-      console.log('API Response:', flightOffers);
-
-      this.flights = flightOffers.data.map((offer: any) => {
-        const segments = offer.itineraries[0].segments;
-        const departureSegment = segments[0];
-        const arrivalSegment = segments[segments.length - 1];
-
-        return {
-          departureCode: departureSegment.departure.iataCode,
-          destinationCode: arrivalSegment.arrival.iataCode,
-          carrier: offer.validatingAirlineCodes[0],
-          price: parseFloat(offer.price.total), // Ensure price is a number
-          departureTime: departureSegment.departure.at,
-          arrivalTime: arrivalSegment.arrival.at,
-          duration: offer.itineraries[0].duration,
-          stops: segments.length - 1,
-          date: departureSegment.departure.at,
-          available: true
-        };
-      });
-
+      this.flights = await this.callAmadeus(this.departure, this.destination, this.departureDate, this.adults);
+      console.log("###########################################");
+      console.log(this.flights);
+      console.log("#######################################################");
       if (this.tripType === 'round-trip') {
-        const returnFlightOffers = await this.amadeusService.searchFlights(this.destination, this.departure, this.returnDate, this.adults);
-        console.log('API Response (Retour):', returnFlightOffers);
-
-        this.returnFlights = returnFlightOffers.data.map((offer: any) => {
-          const segments = offer.itineraries[0].segments;
-          const departureSegment = segments[0];
-          const arrivalSegment = segments[segments.length - 1];
-
-          return {
-            departureCode: departureSegment.departure.iataCode,
-            destinationCode: arrivalSegment.arrival.iataCode,
-            carrier: offer.validatingAirlineCodes[0],
-            price: parseFloat(offer.price.total), // Ensure price is a number
-            departureTime: departureSegment.departure.at,
-            arrivalTime: arrivalSegment.arrival.at,
-            duration: offer.itineraries[0].duration,
-            stops: segments.length - 1,
-            date: departureSegment.departure.at,
-            available: true
-          };
-        });
+        this.returnFlights = await this.callAmadeus(this.destination, this.departure, this.returnDate, this.adults);
       }
 
       this.isTab2Enabled = true;
-      this.selectedIndex = 1; // Directly go to "Choisir le vol" tab
+      this.selectedIndex = 1; 
 
       console.log('Selected flight:', this.flights);
       console.log('Selected return flight:', this.returnFlights);
@@ -237,6 +200,30 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.isLoading = false;
     }
   }
+
+  private async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
+    const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
+    console.log('API Response:', flightOffers);
+
+    return flightOffers.data.map((offer: any) => {
+        const segments = offer.itineraries[0].segments;
+        const departureSegment = segments[0];
+        const arrivalSegment = segments[segments.length - 1];
+
+        return {
+            departureCode: departureSegment.departure.iataCode,
+            destinationCode: arrivalSegment.arrival.iataCode,
+            carrier: offer.validatingAirlineCodes[0],
+            price: parseFloat(offer.price.total), // Ensure price is a number
+            departureTime: departureSegment.departure.at,
+            arrivalTime: arrivalSegment.arrival.at,
+            duration: offer.itineraries[0].duration,
+            stops: segments.length - 1,
+            date: departureSegment.departure.at,
+            available: true
+        };
+    });
+}
 
   showError(message: string) {
     this.snackBar.open(message, 'Fermer', {
