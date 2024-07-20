@@ -139,60 +139,66 @@ export class FiltreRechercheVolsComponent implements OnInit {
   async onSubmit() {
     this.departureError = '';
     this.destinationError = '';
-
+  
     const departureCity = this.cities.find(city => city.name === this.departureControl.value);
     const destinationCity = this.cities.find(city => city.name === this.destinationControl.value);
-
+  
     if (!departureCity) {
       this.departureError = 'La ville de départ n\'est pas valide.';
       this.showError(this.departureError);
       return;
     }
-
+  
     if (!destinationCity) {
       this.destinationError = 'La ville de destination n\'est pas valide.';
       this.showError(this.destinationError);
       return;
     }
-
+  
     if (this.departure === this.destination) {
       this.destinationError = 'La ville de départ ne peut pas être la même que la ville d\'arrivée.';
       this.showError(this.destinationError);
       return;
     }
-
+  
     if (this.tripType === 'round-trip' && this.returnDate <= this.departureDate) {
       this.destinationError = 'La date de retour doit être supérieure à la date de départ.';
       this.showError(this.destinationError);
       return;
     }
-
-    console.log('Recherche de vol :', {
-      departure: this.departure,
-      destination: this.destination,
-      tripType: this.tripType,
-      departureDate: this.departureDate,
-      returnDate: this.returnDate,
-      adults: this.adults,
-      children: this.children
-    });
-
+  
     this.isLoading = true;
-
+    this.flights = [];
+    this.returnFlights = [];
+  
     try {
-      this.flights = await this.callAmadeus(this.departure, this.destination, this.departureDate, this.adults);
-      console.log("###########################################");
-      console.log(this.flights);
-      console.log("#######################################################");
-      if (this.tripType === 'round-trip') {
-        this.returnFlights = await this.callAmadeus(this.destination, this.departure, this.returnDate, this.adults);
+      console.log('Fetching flights with params:', {
+        departure: this.departure,
+        destination: this.destination,
+        departureDate: this.departureDate,
+        returnDate: this.returnDate,
+        adults: this.adults,
+        children: this.children
+      });
+  
+      // Fetch flights for the selected date and the six days around it
+      for (let i = -3; i <= 3; i++) {
+        const date = this.adjustDate(this.departureDate, i);
+        console.log(date);
+        const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
+        this.flights.push(...dayFlights);
       }
-
+  
+      if (this.tripType === 'round-trip') {
+        for (let i = -3; i <= 3; i++) {
+          const date = this.adjustDate(this.returnDate, i);
+          const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
+          this.returnFlights.push(...dayReturnFlights);
+        }
+      }
+  
       this.isTab2Enabled = true;
       this.selectedIndex = 1; 
-
-      console.log('Selected flight:', this.flights);
-      console.log('Selected return flight:', this.returnFlights);
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
@@ -201,29 +207,33 @@ export class FiltreRechercheVolsComponent implements OnInit {
     }
   }
 
+  private adjustDate(dateString: string, days: number): string {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  }
+
   private async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
     const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
-    console.log('API Response:', flightOffers);
-
     return flightOffers.data.map((offer: any) => {
-        const segments = offer.itineraries[0].segments;
-        const departureSegment = segments[0];
-        const arrivalSegment = segments[segments.length - 1];
+      const segments = offer.itineraries[0].segments;
+      const departureSegment = segments[0];
+      const arrivalSegment = segments[segments.length - 1];
 
-        return {
-            departureCode: departureSegment.departure.iataCode,
-            destinationCode: arrivalSegment.arrival.iataCode,
-            carrier: offer.validatingAirlineCodes[0],
-            price: parseFloat(offer.price.total), // Ensure price is a number
-            departureTime: departureSegment.departure.at,
-            arrivalTime: arrivalSegment.arrival.at,
-            duration: offer.itineraries[0].duration,
-            stops: segments.length - 1,
-            date: departureSegment.departure.at,
-            available: true
-        };
+      return {
+        departureCode: departureSegment.departure.iataCode,
+        destinationCode: arrivalSegment.arrival.iataCode,
+        carrier: offer.validatingAirlineCodes[0],
+        price: parseFloat(offer.price.total), // Ensure price is a number
+        departureTime: departureSegment.departure.at,
+        arrivalTime: arrivalSegment.arrival.at,
+        duration: offer.itineraries[0].duration,
+        stops: segments.length - 1,
+        date: departureSegment.departure.at,
+        available: true
+      };
     });
-}
+  }
 
   showError(message: string) {
     this.snackBar.open(message, 'Fermer', {
@@ -257,6 +267,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.isTab4Enabled = false;
     } else if (event.index === 1) {
       this.isTab3Enabled = false;
+      this.isTab4Enabled = false;
+    } else if (event.index === 2) {
       this.isTab4Enabled = false;
     }
   }

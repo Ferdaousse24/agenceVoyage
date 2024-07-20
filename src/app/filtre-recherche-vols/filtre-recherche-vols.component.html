@@ -83,6 +83,7 @@
 
   <mat-tab label="2- Choisir le vol" [disabled]="!isTab2Enabled">
     <app-recuperation-vols
+      *ngIf="(tripType === 'one-way' && flights.length === 7) || (tripType === 'round-trip' && flights.length === 7 && returnFlights.length === 7)"
       [flights]="flights"
       [returnFlights]="returnFlights"
       [departure]="departure"
