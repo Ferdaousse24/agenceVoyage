@@ -40,7 +40,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   isTab3Enabled: boolean = false;
   isTab4Enabled: boolean = false;
   flights: any[] = [];
-  returnFlights: any[] = []; 
+  returnFlights: any[] = [];
   departure: string = '';
   destination: string = '';
   departureDate: string = '';
@@ -48,6 +48,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   tripType: string = 'one-way';
   adults: number = 1;
   children: number = 0;
+  travelers: any[] = []; // Initialize this array
   isLoading: boolean = false;
   showAdditionalFields: boolean = false;
   departureControl = new FormControl();
@@ -205,6 +206,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+  
+    this.travelers = this.getTravelers(); // Initialize travelers array based on the number of adults and children
   }
 
   private adjustDate(dateString: string, days: number): string {
@@ -271,6 +274,14 @@ export class FiltreRechercheVolsComponent implements OnInit {
     } else if (event.index === 2) {
       this.isTab4Enabled = false;
     }
+  }
+
+  getTravelers(): any[] {
+    const travelers = [];
+    for (let i = 0; i < this.adults + this.children; i++) {
+      travelers.push({});
+    }
+    return travelers;
   }
 
   cities = [
