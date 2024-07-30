@@ -48,6 +48,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   tripType: string = 'one-way';
   adults: number = 1;
   children: number = 0;
+  infants: number = 0; // Add this property
   travelers: any[] = []; // Initialize this array
   isLoading: boolean = false;
   showAdditionalFields: boolean = false;
@@ -58,6 +59,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
   today: string = new Date().toISOString().split('T')[0];
   departureError: string = '';
   destinationError: string = '';
+  selectedTravelerIndex: number = 0;
+  selectedTravelerType: string = 'Adulte';
   paymentMessage: string = '';
 
   constructor(private snackBar: MatSnackBar, private amadeusService: AmadeusService) {}
@@ -83,6 +86,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.updateFilteredOptions();
       this.onDestinationChange();
     });
+    this.travelers = this.getTravelers();
   }
 
   filterOptions(value: string, type: string): any[] {
@@ -209,6 +213,10 @@ export class FiltreRechercheVolsComponent implements OnInit {
   
     this.travelers = this.getTravelers(); // Initialize travelers array based on the number of adults and children
   }
+  onSubmitBebe() {
+    console.log("Baby form submitted");
+    this.enableTab4(); // Enable the next tab if necessary
+  }
 
   private adjustDate(dateString: string, days: number): string {
     const date = new Date(dateString);
@@ -278,11 +286,23 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   getTravelers(): any[] {
     const travelers = [];
-    for (let i = 0; i < this.adults + this.children; i++) {
-      travelers.push({});
+    for (let i = 0; i < this.adults; i++) {
+      travelers.push({ type: 'Adulte' });
+    }
+    for (let i = 0; i < this.children; i++) {
+      travelers.push({ type: 'Enfant' });
+    }
+    for (let i = 0; i < this.infants; i++) {
+      travelers.push({ type: 'Bébé' });
     }
     return travelers;
   }
+
+  selectTraveler(index: number) {
+    this.selectedTravelerIndex = index;
+    this.selectedTravelerType = this.travelers[index].type; // Update selected traveler type
+  }
+
 
   cities = [
     { code: 'GVA', name: 'Geneve, Suisse' },

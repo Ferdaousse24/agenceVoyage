@@ -58,7 +58,9 @@
               <label for="returnDate">Date de retour *</label>
               <input type="date" id="returnDate" class="form-control" [(ngModel)]="returnDate" name="returnDate" [min]="departureDate" required>
             </div>
+          </div>
 
+          <div class="form-row"> <!-- Nouvelle ligne de formulaire pour les voyageurs -->
             <div class="form-group">
               <label for="adults">Nombre d'adultes *</label>
               <input type="number" id="adults" class="form-control" [(ngModel)]="adults" name="adults" min="1" required>
@@ -67,6 +69,11 @@
             <div class="form-group">
               <label for="children">Nombre d'enfants</label>
               <input type="number" id="children" class="form-control" [(ngModel)]="children" name="children" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="infants">Nombre de bébés (< 2 ans)</label>
+              <input type="number" id="infants" class="form-control" [(ngModel)]="infants" name="infants" min="0">
             </div>
           </div>
         </div>
@@ -93,26 +100,75 @@
       [tripType]="tripType"
       [adults]="adults"
       [children]="children"
+      [infants]="infants"
       (selectedFlightChange)="onSelectedFlightChange($event)"
       (flightSelected)="enableTab3()">
     </app-recuperation-vols>
   </mat-tab>
 
   <mat-tab label="3- Information voyageur" [disabled]="!isTab3Enabled">
-    <div *ngFor="let traveler of travelers; let i = index">
-      <h3>Voyageur {{i + 1}}</h3>
-      <app-voyageur 
-        [departure]="departure"
-        [destination]="destination"
-        [dateDeparture]="departureDate"
-        [dateRetour]="returnDate"
-        [tripType]="tripType"
-        (formValid)="enableTab4()">
-      </app-voyageur>
+    <div class="traveler-navigation">
+      <div class="nav-menu">
+        <div *ngFor="let traveler of travelers; let i = index" [class.active]="selectedTravelerIndex === i">
+          <button (click)="selectTraveler(i)">
+            {{ traveler.type }} {{ i + 1 }}
+          </button>
+        </div>
+      </div>
+      <div class="traveler-form">
+        <ng-container *ngFor="let traveler of travelers; let i = index">
+          <div *ngIf="selectedTravelerIndex === i">
+            <h2>Informations {{ traveler.type }} {{ i + 1 }}</h2>
+            <app-voyageur
+              *ngIf="traveler.type !== 'Bébé'"
+              [departure]="departure"
+              [destination]="destination"
+              [dateDeparture]="departureDate"
+              [dateRetour]="returnDate"
+              [tripType]="tripType"
+              (formValid)="enableTab4()">
+            </app-voyageur>
+            <div *ngIf="traveler.type === 'Bébé'">
+              <!-- Formulaire spécifique pour bébé -->
+              <form (ngSubmit)="onSubmitBebe()" #bebeForm="ngForm">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="voyagerAvec">Voyager avec *</label>
+                    <select id="voyagerAvec" class="form-control" required>
+                      <option value="parent1">Parent 1</option>
+                      <option value="parent2">Parent 2</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="prenomBebe">Prénom *</label>
+                    <input type="text" id="prenomBebe" class="form-control" name="prenomBebe" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="nomBebe">Nom *</label>
+                    <input type="text" id="nomBebe" class="form-control" name="nomBebe" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="nationaliteBebe">Nationalité *</label>
+                    <input type="text" id="nationaliteBebe" class="form-control" name="nationaliteBebe" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="dateNaissanceBebe">Date de naissance *</label>
+                    <input type="date" id="dateNaissanceBebe" class="form-control" name="dateNaissanceBebe" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </ng-container>
+      </div>
     </div>
   </mat-tab>
   
-
   <mat-tab label="4- Paiement" [disabled]="!isTab4Enabled">
     <app-paiement></app-paiement>
   </mat-tab>
