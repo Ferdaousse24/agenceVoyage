@@ -31,6 +31,7 @@ export class RecuperationVolsComponent implements OnChanges {
   @Input() tripType!: string;
   @Input() adults!: number;
   @Input() children!: number;
+  @Input() infants!: number;
   @Output() selectedFlightChange = new EventEmitter<Flight>();
   @Output() flightSelected = new EventEmitter<{ totalPrice: number }>();
 
