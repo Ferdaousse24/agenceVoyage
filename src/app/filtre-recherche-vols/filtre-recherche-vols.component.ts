@@ -14,6 +14,7 @@ import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vol
 import { AmadeusService } from '../services/amadeus.service';
 import { PaiementComponent } from '../paiement/paiement.component';
 import { LOCALE_ID } from '@angular/core';
+
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
@@ -34,7 +35,6 @@ import { LOCALE_ID } from '@angular/core';
   templateUrl: './filtre-recherche-vols.component.html',
   styleUrls: ['./filtre-recherche-vols.component.css'],
   providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
-
 })
 export class FiltreRechercheVolsComponent implements OnInit {
   selectedIndex: number = 0;
@@ -50,8 +50,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
   tripType: string = 'one-way';
   adults: number = 1;
   children: number = 0;
-  infants: number = 0; // Add this property
-  travelers: any[] = []; // Initialize this array
+  infants: number = 0;
+  travelers: any[] = [];
   isLoading: boolean = false;
   showAdditionalFields: boolean = false;
   departureControl = new FormControl();
@@ -188,7 +188,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
         children: this.children
       });
   
-      // Fetch flights for the selected date and the six days around it
       for (let i = -3; i <= 3; i++) {
         const date = this.adjustDate(this.departureDate, i);
         console.log(date);
@@ -204,8 +203,13 @@ export class FiltreRechercheVolsComponent implements OnInit {
         }
       }
   
-      this.isTab2Enabled = true;
-      this.selectedIndex = 1; 
+      if (this.flights.length === 0 || (this.tripType === 'round-trip' && this.returnFlights.length === 0)) {
+        this.showError("Il n'y a pas de vols entre ces deux villes.");
+        this.isTab2Enabled = false;
+      } else {
+        this.isTab2Enabled = true;
+        this.selectedIndex = 1; 
+      }
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
@@ -213,11 +217,12 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.isLoading = false;
     }
   
-    this.travelers = this.getTravelers(); // Initialize travelers array based on the number of adults and children
+    this.travelers = this.getTravelers();
   }
+
   onSubmitBebe() {
     console.log("Baby form submitted");
-    this.enableTab4(); // Enable the next tab if necessary
+    this.enableTab4();
   }
 
   private adjustDate(dateString: string, days: number): string {
@@ -237,7 +242,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
         departureCode: departureSegment.departure.iataCode,
         destinationCode: arrivalSegment.arrival.iataCode,
         carrier: offer.validatingAirlineCodes[0],
-        price: parseFloat(offer.price.total), // Ensure price is a number
+        price: parseFloat(offer.price.total),
         departureTime: departureSegment.departure.at,
         arrivalTime: arrivalSegment.arrival.at,
         duration: offer.itineraries[0].duration,
@@ -270,7 +275,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   }
 
   onFlightSelected() {
-    this.enableTab3(); // Only enable and navigate to tab 3 when the "Total" button is clicked
+    this.enableTab3();
   }
 
   onTabChange(event: any) {
@@ -302,9 +307,8 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   selectTraveler(index: number) {
     this.selectedTravelerIndex = index;
-    this.selectedTravelerType = this.travelers[index].type; // Update selected traveler type
+    this.selectedTravelerType = this.travelers[index].type;
   }
-
 
   cities = [
     { code: 'GVA', name: 'Geneve, Suisse' },

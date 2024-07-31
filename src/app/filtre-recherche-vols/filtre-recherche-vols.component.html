@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <div class="form-row"> <!-- Nouvelle ligne de formulaire pour les voyageurs -->
+          <div class="form-row">
             <div class="form-group">
               <label for="adults">Nombre d'adultes *</label>
               <input type="number" id="adults" class="form-control" [(ngModel)]="adults" name="adults" min="1" required>
@@ -90,7 +90,7 @@
 
   <mat-tab label="2- Choisir le vol" [disabled]="!isTab2Enabled">
     <app-recuperation-vols
-      *ngIf="(tripType === 'one-way' && flights.length === 7) || (tripType === 'round-trip' && flights.length === 7 && returnFlights.length === 7)"
+      *ngIf="(tripType === 'one-way' && flights.length > 0) || (tripType === 'round-trip' && flights.length > 0 && returnFlights.length > 0)"
       [flights]="flights"
       [returnFlights]="returnFlights"
       [departure]="departure"
@@ -104,6 +104,9 @@
       (selectedFlightChange)="onSelectedFlightChange($event)"
       (flightSelected)="enableTab3()">
     </app-recuperation-vols>
+    <p *ngIf="flights.length === 0 || (tripType === 'round-trip' && returnFlights.length === 0)">
+      Il n'y a pas de vols entre ces deux villes.
+    </p>
   </mat-tab>
 
   <mat-tab label="3- Information voyageur" [disabled]="!isTab3Enabled">
@@ -129,7 +132,6 @@
               (formValid)="enableTab4()">
             </app-voyageur>
             <div *ngIf="traveler.type === 'Bébé'">
-              <!-- Formulaire spécifique pour bébé -->
               <form (ngSubmit)="onSubmitBebe()" #bebeForm="ngForm">
                 <div class="form-row">
                   <div class="form-group">
