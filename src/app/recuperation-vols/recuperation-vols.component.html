@@ -9,7 +9,7 @@
             [class.selected]="isSelectedDepartureFlight(i)" 
             (click)="handleFlightSelection(flight, i)">
             <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
-            <p>{{ flight.available ? 'EUR ' + flight.price + ' +' : 'pas de vols' }}</p>
+            <p>{{ flight.available ? 'EUR ' + (flight.price + agencyFee) + ' +' : 'pas de vols' }}</p>
             <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops === 1 ? '1 escale' : flight.stops + ' escales' }}</p>
           </div>
         </div>
@@ -42,7 +42,7 @@
               [class.selected]="isSelectedReturnFlight(i)" 
               (click)="handleReturnFlightSelection(flight, i)">
               <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
-              <p>{{ flight.available ? 'EUR ' + flight.price + ' +' : 'pas de vols' }}</p>
+              <p>{{ flight.available ? 'EUR ' + (flight.price + agencyFee) + ' +' : 'pas de vols' }}</p>
               <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops === 1 ? '1 escale' : flight.stops + ' escales' }}</p>
             </div>
           </div>
@@ -70,7 +70,7 @@
     class="select-button" 
     (click)="onFlightSelected()" 
     [disabled]="!selectedDepartureFlight || !selectedDepartureFlight.available">
-    Depuis EUR {{ selectedDepartureFlight.price + 40 }}
+    Depuis EUR {{ selectedDepartureFlight.price + agencyFee }}
   </button>
 
   <button 
@@ -80,6 +80,4 @@
     [disabled]="!selectedDepartureFlight || !selectedReturnFlight || !selectedDepartureFlight.available || !selectedReturnFlight.available">
     Total = {{ calculateTotalPrice() }}
   </button>
-  
-  
 </div>
