@@ -188,28 +188,31 @@ export class FiltreRechercheVolsComponent implements OnInit {
         children: this.children
       });
   
+      const today = new Date();
+  
+      // Fetch flights for the selected date and the six days around it
       for (let i = -3; i <= 3; i++) {
         const date = this.adjustDate(this.departureDate, i);
-        console.log(date);
-        const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
-        this.flights.push(...dayFlights);
+        const dateObj = new Date(date);
+        if (dateObj >= today) {
+          const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
+          this.flights.push(...dayFlights);
+        }
       }
   
       if (this.tripType === 'round-trip') {
         for (let i = -3; i <= 3; i++) {
           const date = this.adjustDate(this.returnDate, i);
-          const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
-          this.returnFlights.push(...dayReturnFlights);
+          const dateObj = new Date(date);
+          if (dateObj >= today) {
+            const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
+            this.returnFlights.push(...dayReturnFlights);
+          }
         }
       }
   
-      if (this.flights.length === 0 || (this.tripType === 'round-trip' && this.returnFlights.length === 0)) {
-        this.showError("Il n'y a pas de vols entre ces deux villes.");
-        this.isTab2Enabled = false;
-      } else {
-        this.isTab2Enabled = true;
-        this.selectedIndex = 1; 
-      }
+      this.isTab2Enabled = true;
+      this.selectedIndex = 1; 
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
@@ -217,41 +220,50 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.isLoading = false;
     }
   
-    this.travelers = this.getTravelers();
+    this.travelers = this.getTravelers(); // Initialize travelers array based on the number of adults and children
   }
-
-  onSubmitBebe() {
-    console.log("Baby form submitted");
-    this.enableTab4();
-  }
-
+  
+  
   private adjustDate(dateString: string, days: number): string {
     const date = new Date(dateString);
     date.setDate(date.getDate() + days);
     return date.toISOString().split('T')[0];
   }
-
-  private async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
-    const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
-    return flightOffers.data.map((offer: any) => {
-      const segments = offer.itineraries[0].segments;
-      const departureSegment = segments[0];
-      const arrivalSegment = segments[segments.length - 1];
-
-      return {
-        departureCode: departureSegment.departure.iataCode,
-        destinationCode: arrivalSegment.arrival.iataCode,
-        carrier: offer.validatingAirlineCodes[0],
-        price: parseFloat(offer.price.total),
-        departureTime: departureSegment.departure.at,
-        arrivalTime: arrivalSegment.arrival.at,
-        duration: offer.itineraries[0].duration,
-        stops: segments.length - 1,
-        date: departureSegment.departure.at,
-        available: true
-      };
-    });
+  
+  
+  
+  
+  
+  onSubmitBebe() {
+    console.log("Baby form submitted");
+    this.enableTab4();
   }
+
+
+  // amadeus.service.ts
+
+async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
+  const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
+  return flightOffers.data.map((offer: any) => {
+    const segments = offer.itineraries[0].segments;
+    const departureSegment = segments[0];
+    const arrivalSegment = segments[segments.length - 1];
+
+    return {
+      departureCode: departureSegment.departure.iataCode,
+      destinationCode: arrivalSegment.arrival.iataCode,
+      carrier: offer.validatingAirlineCodes[0],
+      price: parseFloat(offer.price.total), // Ensure price is a number
+      departureTime: departureSegment.departure.at,
+      arrivalTime: arrivalSegment.arrival.at,
+      duration: offer.itineraries[0].duration,
+      stops: segments.length - 1,
+      date: departureSegment.departure.at,
+      available: true
+    };
+  });
+}
+
 
   showError(message: string) {
     this.snackBar.open(message, 'Fermer', {
