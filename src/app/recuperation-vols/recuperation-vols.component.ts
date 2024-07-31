@@ -117,15 +117,17 @@ export class RecuperationVolsComponent implements OnChanges {
 
   calculateTotalPrice(): number {
     let totalPrice = 0;
-
+  
     if (this.selectedDepartureFlight && this.selectedReturnFlight) {
       totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + parseFloat(this.selectedReturnFlight.price as any) + 40;
     } else if (this.selectedDepartureFlight) {
       totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + 40;
     }
-
-    return totalPrice;
+  
+    return parseFloat(totalPrice.toFixed(2));
   }
+  
+  
 
   navigateDays(step: number) {
     this.currentDate.setDate(this.currentDate.getDate() + step);
