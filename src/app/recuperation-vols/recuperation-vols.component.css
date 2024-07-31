@@ -44,61 +44,43 @@
 }
 
 .flight-details {
-  margin-top: 10px;
-  padding: 5px;
+  margin-top: 20px;
+  padding: 10px;
   background-color: #41aebecc;
   border-radius: 5px;
-  font-size: medium;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 25%; /* Ajouté pour que les deux divs aient la même largeur */
+  box-sizing: border-box;
+}
+
+.flight-details h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.flight-details p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.flight-timing {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s;
-  white-space: normal;
-  width: 250px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
-.flight-time {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 5px;
+.flight-timing .time {
+  margin: 0 10px;
 }
 
-.flight-duration {
-  color: #ffffff;
-}
-
-.select-button {
-  background-color: #007bff;
+.flight-timing .icon {
   color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 5px;
+  font-size: 24px;
 }
 
-.select-button:hover {
-  background-color: #0056b3;
-}
-
-.no-flights {
-  width: 250px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 5px;
-  background-color: #41aebecc;
-  border-radius: 5px;
-  font-size: medium;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
 
 @media (max-width: 600px) {
   .dates-navigation {

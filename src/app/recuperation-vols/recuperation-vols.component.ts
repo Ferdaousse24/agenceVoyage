@@ -21,7 +21,6 @@ interface Flight {
   templateUrl: './recuperation-vols.component.html',
   styleUrls: ['./recuperation-vols.component.css'],
   providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
-
 })
 export class RecuperationVolsComponent implements OnChanges {
   @Input() flights: Flight[] = [];

@@ -20,6 +20,17 @@
     </div>
   </div>
 
+  <!-- Section pour afficher les détails du vol de départ sélectionné -->
+  <div *ngIf="selectedDepartureFlight" class="flight-details">
+    <h3>Détails du vol sélectionné</h3>
+    <div class="flight-timing">
+      <span class="time">{{ selectedDepartureFlight.departureTime | date: 'HH:mm' }}</span>
+      <span class="icon"><i class="fas fa-plane"></i></span>
+      <span class="time">{{ selectedDepartureFlight.arrivalTime | date: 'HH:mm' }}</span>
+    </div>
+    <p>Durée : {{ selectedDepartureFlight.duration }}</p>
+  </div>
+
   <div *ngIf="tripType === 'round-trip'" class="flight-selection">
     <h2>Sélectionnez votre vol de retour de {{ destination }} vers {{ departure }}</h2>
     <div class="dates-navigation">
@@ -40,6 +51,17 @@
           <p>Pas de vols de retour disponibles pour cette période.</p>
         </ng-template>
       </div>
+    </div>
+
+    <!-- Section pour afficher les détails du vol de retour sélectionné -->
+    <div *ngIf="selectedReturnFlight" class="flight-details">
+      <h3>Détails du vol de retour sélectionné</h3>
+      <div class="flight-timing">
+        <span class="time">{{ selectedReturnFlight.departureTime | date: 'HH:mm' }}</span>
+        <span class="icon"><i class="fas fa-plane"></i></span>
+        <span class="time">{{ selectedReturnFlight.arrivalTime | date: 'HH:mm' }}</span>
+      </div>
+      <p>Durée : {{ selectedReturnFlight.duration }}</p>
     </div>
   </div>
 
