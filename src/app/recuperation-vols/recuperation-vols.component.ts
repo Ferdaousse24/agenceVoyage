@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LOCALE_ID } from '@angular/core';
+
 interface Flight {
   departureCode: string;
   destinationCode: string;
@@ -44,6 +45,8 @@ export class RecuperationVolsComponent implements OnChanges {
   returnCurrentDate: Date = new Date();
   today: Date = new Date();
   selectedDate: string = '';
+
+  agencyFee: number = 40;  // Ajoutez les frais d'agence ici
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flights'] && this.flights.length > 0) {
@@ -119,15 +122,16 @@ export class RecuperationVolsComponent implements OnChanges {
     let totalPrice = 0;
   
     if (this.selectedDepartureFlight && this.selectedReturnFlight) {
-      totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + parseFloat(this.selectedReturnFlight.price as any) + 40;
+      console.log(parseFloat(this.selectedDepartureFlight.price as any));
+      console.log(parseFloat(this.selectedReturnFlight.price as any));
+      totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + parseFloat(this.selectedReturnFlight.price as any) + this.agencyFee;
+      console.log(totalPrice);
     } else if (this.selectedDepartureFlight) {
-      totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + 40;
+      totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + this.agencyFee;
     }
   
     return parseFloat(totalPrice.toFixed(2));
   }
-  
-  
 
   navigateDays(step: number) {
     this.currentDate.setDate(this.currentDate.getDate() + step);
