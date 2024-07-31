@@ -1,8 +1,8 @@
 export const environement = {
     production: false,
     amadeus: {
-      clientId: 'sK6vbONPyYecAZ8ssqpaqAopgn2RfHwB',
-      clientSecret: 'WdickTNJYFmuGjtX'
+      clientId: 'bRgtP5A7HZfkQ56FIFIeRBuf8UTMV2GO',    //'sK6vbONPyYecAZ8ssqpaqAopgn2RfHwB',
+      clientSecret: 'uJVdgRWxCnGGTBxt'                                   //'WdickTNJYFmuGjtX'
     }
   };
   

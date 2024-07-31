@@ -10,7 +10,7 @@
           (click)="handleFlightSelection(flight, i)">
           <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
           <p>{{ flight.available ? 'EUR ' + flight.price + ' +' : 'pas de vols' }}</p>
-          <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops !== null ? flight.stops + ' escale(s)' : 'N/A' }}</p>
+          <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops === 1 ? '1 escale' : flight.stops + ' escales' }}</p>
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@
             (click)="handleReturnFlightSelection(flight, i)">
             <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
             <p>{{ flight.available ? 'EUR ' + flight.price + ' +' : 'pas de vols' }}</p>
-            <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops !== null ? flight.stops + ' escale(s)' : 'N/A' }}</p>
+            <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops === 1 ? '1 escale' : flight.stops + ' escales' }}</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -44,12 +44,13 @@ export class RecuperationVolsComponent implements OnChanges {
   today: Date = new Date();
   selectedDate: string = '';
 
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flights'] && this.flights.length > 0) {
+      console.log("Received flights: ", this.flights);
       this.selectDefaultFlight();
     }
     if (changes['returnFlights'] && this.returnFlights.length > 0) {
+      console.log("Received return flights: ", this.returnFlights);
       this.selectDefaultReturnFlight();
     }
     if (changes['departureDate'] && changes['departureDate'].currentValue) {
@@ -73,7 +74,7 @@ export class RecuperationVolsComponent implements OnChanges {
   }
 
   selectDefaultFlight() {  
-    const middleIndex = 3; // L'indice du milieu pour un tableau de taille 7 est toujours 3
+    const middleIndex = 3; 
     const departureDateString = new Date(this.departureDate).toISOString().split('T')[0];
     const selectedFlightIndex = this.flights.findIndex(f => new Date(f.date).toISOString().split('T')[0] === departureDateString);
     
@@ -83,10 +84,9 @@ export class RecuperationVolsComponent implements OnChanges {
       this.selectFlight(this.flights[middleIndex], middleIndex);
     }
   }
-  
 
   selectDefaultReturnFlight() {
-    const middleIndex = 3; // L'indice du milieu pour un tableau de taille 7 est toujours 3
+    const middleIndex = 3;
     const selectedReturnFlightIndex = this.returnFlights.findIndex(f => f.date.split('T')[0] === this.returnDate.split('T')[0]);
     this.selectReturnFlight(this.returnFlights[selectedReturnFlightIndex !== -1 ? selectedReturnFlightIndex : middleIndex], selectedReturnFlightIndex !== -1 ? selectedReturnFlightIndex : middleIndex);
   }
