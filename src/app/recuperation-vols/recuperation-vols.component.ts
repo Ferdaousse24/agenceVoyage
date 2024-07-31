@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { LOCALE_ID } from '@angular/core';
 interface Flight {
   departureCode: string;
   destinationCode: string;
@@ -19,7 +19,9 @@ interface Flight {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './recuperation-vols.component.html',
-  styleUrls: ['./recuperation-vols.component.css']
+  styleUrls: ['./recuperation-vols.component.css'],
+  providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
+
 })
 export class RecuperationVolsComponent implements OnChanges {
   @Input() flights: Flight[] = [];

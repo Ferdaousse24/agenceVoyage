@@ -13,7 +13,7 @@ import { VoyageurComponent } from '../voyageur/voyageur.component';
 import { RecuperationVolsComponent } from '../recuperation-vols/recuperation-vols.component';
 import { AmadeusService } from '../services/amadeus.service';
 import { PaiementComponent } from '../paiement/paiement.component';
-
+import { LOCALE_ID } from '@angular/core';
 @Component({
   selector: 'app-filtre-recherche-vols',
   standalone: true,
@@ -32,7 +32,9 @@ import { PaiementComponent } from '../paiement/paiement.component';
     PaiementComponent
   ],
   templateUrl: './filtre-recherche-vols.component.html',
-  styleUrls: ['./filtre-recherche-vols.component.css']
+  styleUrls: ['./filtre-recherche-vols.component.css'],
+  providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
+
 })
 export class FiltreRechercheVolsComponent implements OnInit {
   selectedIndex: number = 0;
