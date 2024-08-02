@@ -3,11 +3,11 @@
   <div class="dates-navigation">
     <div class="flight-options-container">
       <div *ngIf="flights && flights.length > 0; else noFlightsMessage">
-        <div *ngFor="let flight of flights; let i = index" class="date-option" [attr.id]="'flight-' + flight.date.split('T')[0]">
-          <div 
-            class="selectable-flight" 
-            [class.selected]="isSelectedDepartureFlight(i)" 
-            (click)="handleFlightSelection(flight, i)">
+        <div class="date-option" 
+             [ngClass]="{'selected': isSelectedDepartureFlight(i)}" 
+             *ngFor="let flight of flights; let i = index" 
+             (click)="handleFlightSelection(flight, i)">
+          <div class="selectable-flight">
             <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
             <p>{{ flight.available ? 'EUR ' + (flight.price + agencyFee) + ' +' : 'pas de vols' }}</p>
             <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops === 1 ? '1 escale' : flight.stops + ' escales' }}</p>
@@ -36,11 +36,11 @@
     <div class="dates-navigation">
       <div class="flight-options-container">
         <div *ngIf="returnFlights && returnFlights.length > 0; else noReturnFlightsMessage">
-          <div *ngFor="let flight of returnFlights; let i = index" class="date-option" [attr.id]="'return-flight-' + flight.date.split('T')[0]">
-            <div 
-              class="selectable-flight" 
-              [class.selected]="isSelectedReturnFlight(i)" 
-              (click)="handleReturnFlightSelection(flight, i)">
+          <div class="date-option" 
+               [ngClass]="{'selected': isSelectedReturnFlight(i)}" 
+               *ngFor="let flight of returnFlights; let i = index" 
+               (click)="handleReturnFlightSelection(flight, i)">
+            <div class="selectable-flight">
               <p>{{ flight.date | date: 'EEEE d MMM' }}</p>
               <p>{{ flight.available ? 'EUR ' + (flight.price + agencyFee) + ' +' : 'pas de vols' }}</p>
               <p>{{ flight.stops === 0 ? 'Vol direct' : flight.stops === 1 ? '1 escale' : flight.stops + ' escales' }}</p>

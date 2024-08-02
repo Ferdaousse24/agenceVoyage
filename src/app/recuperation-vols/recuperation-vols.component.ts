@@ -59,11 +59,9 @@ export class RecuperationVolsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flights'] && this.flights.length > 0) {
-      console.log("Received flights: ", this.flights);
       this.selectDefaultFlight();
     }
     if (changes['returnFlights'] && this.returnFlights.length > 0) {
-      console.log("Received return flights: ", this.returnFlights);
       this.selectDefaultReturnFlight();
     }
     if (changes['departureDate'] && changes['departureDate'].currentValue) {
@@ -87,37 +85,63 @@ export class RecuperationVolsComponent implements OnInit, OnChanges {
   }
 
   selectDefaultFlight() {
-    const middleIndex = 3;
-    const departureDateString = new Date(this.departureDate).toISOString().split('T')[0];
-    const selectedFlightIndex = this.flights.findIndex(f => new Date(f.date).toISOString().split('T')[0] === departureDateString);
+    const selectedDepartureDate = new Date(this.departureDate).toISOString().split('T')[0];
 
-    if (selectedFlightIndex !== -1) {
-      this.selectFlight(this.flights[selectedFlightIndex], selectedFlightIndex);
-    } else {
-      this.selectFlight(this.flights[middleIndex], middleIndex);
+    let defaultFlightIndex = this.flights.findIndex(flight => {
+      const flightDate = new Date(flight.date).toISOString().split('T')[0];
+      return flightDate === selectedDepartureDate;
+    });
+
+    if (defaultFlightIndex === -1) {
+      // Si aucune correspondance exacte n'est trouvée, choisissez le vol le plus proche
+      let closestDateDiff = Infinity;
+      this.flights.forEach((flight, index) => {
+        const flightDate = new Date(flight.date).toISOString().split('T')[0];
+        const dateDiff = Math.abs(new Date(flightDate).getTime() - new Date(selectedDepartureDate).getTime());
+        if (dateDiff < closestDateDiff) {
+          closestDateDiff = dateDiff;
+          defaultFlightIndex = index;
+        }
+      });
+    }
+
+    if (defaultFlightIndex !== -1) {
+      this.selectFlight(this.flights[defaultFlightIndex], defaultFlightIndex);
     }
   }
 
   selectDefaultReturnFlight() {
-    const middleIndex = 3;
-    const returnDateString = new Date(this.returnDate).toISOString().split('T')[0];
-    const selectedReturnFlightIndex = this.returnFlights.findIndex(f => new Date(f.date).toISOString().split('T')[0] === returnDateString);
+    const selectedReturnDate = new Date(this.returnDate).toISOString().split('T')[0];
 
-    if (selectedReturnFlightIndex !== -1) {
-      this.selectReturnFlight(this.returnFlights[selectedReturnFlightIndex], selectedReturnFlightIndex);
-    } else {
-      this.selectReturnFlight(this.returnFlights[middleIndex], middleIndex);
+    let defaultReturnFlightIndex = this.returnFlights.findIndex(flight => {
+      const flightDate = new Date(flight.date).toISOString().split('T')[0];
+      return flightDate === selectedReturnDate;
+    });
+
+    if (defaultReturnFlightIndex === -1) {
+      // Si aucune correspondance exacte n'est trouvée, choisissez le vol le plus proche
+      let closestDateDiff = Infinity;
+      this.returnFlights.forEach((flight, index) => {
+        const flightDate = new Date(flight.date).toISOString().split('T')[0];
+        const dateDiff = Math.abs(new Date(flightDate).getTime() - new Date(selectedReturnDate).getTime());
+        if (dateDiff < closestDateDiff) {
+          closestDateDiff = dateDiff;
+          defaultReturnFlightIndex = index;
+        }
+      });
+    }
+
+    if (defaultReturnFlightIndex !== -1) {
+      this.selectReturnFlight(this.returnFlights[defaultReturnFlightIndex], defaultReturnFlightIndex);
     }
   }
 
   handleFlightSelection(flight: Flight, index: number) {
-    this.selectedDepartureFlight = flight;
-    this.selectedIndex = index;
+    this.selectFlight(flight, index);
   }
 
   handleReturnFlightSelection(flight: Flight, index: number) {
-    this.selectedReturnFlight = flight;
-    this.selectedReturnIndex = index;
+    this.selectReturnFlight(flight, index);
   }
 
   onFlightSelected() {
