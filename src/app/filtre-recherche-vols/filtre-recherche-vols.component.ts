@@ -233,40 +233,41 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.returnFlights = [];
   
     try {
-      console.log('Fetching flights with params:', {
-        departure: this.departure,
-        destination: this.destination,
-        departureDate: this.departureDate,
-        returnDate: this.returnDate,
-        adults: this.adults,
-        children: this.children
-      });
-  
       const today = new Date();
+      let startDate = new Date(this.departureDate);
+      let returnStartDate = new Date(this.returnDate);
   
+      if (this.departureDate === this.today) {
+        startDate = today;
+      } else if (new Date(this.departureDate).getTime() - today.getTime() <= 24 * 60 * 60 * 1000) {
+        startDate = today;
+      } else if (new Date(this.departureDate).getTime() - today.getTime() <= 2 * 24 * 60 * 60 * 1000) {
+        startDate = today;
+      }
       // Fetch flights for the selected date and the six days around it
-      for (let i = -3; i <= 3; i++) {
-        const date = this.adjustDate(this.departureDate, i);
-        const dateObj = new Date(date);
-        if (dateObj >= today) {
+      for (let i = 0; i < 7; i++) {
+        const date = this.adjustDate(startDate, i);
           const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
           this.flights.push(...dayFlights);
-        }
       }
-  
       if (this.tripType === 'round-trip') {
-        for (let i = -3; i <= 3; i++) {
-          const date = this.adjustDate(this.returnDate, i);
-          const dateObj = new Date(date);
-          if (dateObj >= today) {
+        if (this.returnDate === this.today) {
+          returnStartDate = today;
+        } else if (new Date(this.returnDate).getTime() - today.getTime() <= 24 * 60 * 60 * 1000) {
+          returnStartDate = today;
+        } else if (new Date(this.returnDate).getTime() - today.getTime() <= 2 * 24 * 60 * 60 * 1000) {
+          returnStartDate = today;
+        }
+  
+        for (let i = 0; i < 7; i++) {
+          const date = this.adjustDate(returnStartDate, i);
             const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
             this.returnFlights.push(...dayReturnFlights);
-          }
         }
       }
   
       this.isTab2Enabled = true;
-      this.selectedIndex = 1; 
+      this.selectedIndex = 1;
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
@@ -277,11 +278,12 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.travelers = this.getTravelers(); // Initialize travelers array based on the number of adults and children
   }
   
-  private adjustDate(dateString: string, days: number): string {
-    const date = new Date(dateString);
+  private adjustDate(startDate: Date, days: number): string {
+    const date = new Date(startDate);
     date.setDate(date.getDate() + days);
     return date.toISOString().split('T')[0];
   }
+  
   
   onSubmitBebe() {
     console.log("Baby form submitted");
@@ -290,6 +292,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
     const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
+    console.log(flightOffers);
     return flightOffers.data.map((offer: any) => {
       const segments = offer.itineraries[0].segments;
       const departureSegment = segments[0];

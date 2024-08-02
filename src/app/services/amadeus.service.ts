@@ -35,7 +35,6 @@ export class AmadeusService {
     if (!this.token) {
       throw new Error('No token available');
     }
-
     const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
       params: {
         originLocationCode: departure,
@@ -48,7 +47,6 @@ export class AmadeusService {
         Authorization: `Bearer ${this.token}`,
       }
     });
-
     return response.data;
   }
 
