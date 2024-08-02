@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,6 +37,86 @@ import { LOCALE_ID } from '@angular/core';
   providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
 })
 export class FiltreRechercheVolsComponent implements OnInit {
+  adults = 1; // Valeur initiale pour le nombre d'adultes
+  adultsOptions: string[] = [];
+  nationalityControl = new FormControl();
+  filteredNationalities!: Observable<string[]>;
+  nationalities: string[] = ['Française', 'Canadienne', 'Américaine', 'Algérienne', 'Marocaine']; // Ajoutez plus de nationalités ici
+
+  bebeForm: FormGroup; // Ajout du formulaire bébé
+  filteredNationalitiesBebe: string[] = []; // Ajout pour le filtre de nationalité du bébé
+  maxBirthDate: string = new Date().toISOString().split('T')[0]; // Définir la date maximale comme aujourd'hui
+
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private amadeusService: AmadeusService) {
+    this.updateAdultsOptions();
+    this.bebeForm = this.fb.group({
+      voyagerAvec: ['', Validators.required],
+      prenomBebe: ['', Validators.required],
+      nomBebe: ['', Validators.required],
+      nationaliteBebe: ['', Validators.required],
+      dateNaissanceBebe: ['', Validators.required]
+    });
+  }
+
+  ngOnInit() {
+    this.filteredOptions = this.departureControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterOptions(value, 'departure'))
+    );
+
+    this.filteredDestinationOptions = this.destinationControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterOptions(value, 'destination'))
+    );
+
+    this.filteredNationalities = this.nationalityControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterNationalities(value))
+    );
+
+    this.departureControl.valueChanges.subscribe(value => {
+      this.departure = this.getCityCode(value);
+      this.updateFilteredOptions();
+    });
+
+    this.destinationControl.valueChanges.subscribe(value => {
+      this.destination = this.getCityCode(value);
+      this.updateFilteredOptions();
+      this.onDestinationChange();
+    });
+    this.travelers = this.getTravelers();
+  }
+
+  private _filterNationalities(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.nationalities.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  filterNationalitiesBebe(event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    if (input) {
+      this.filteredNationalitiesBebe = this.nationalities.filter(n =>
+        n.toLowerCase().includes(input.toLowerCase())
+      );
+    } else {
+      this.filteredNationalitiesBebe = [];
+    }
+  }
+
+  selectNationalityBebe(nationality: string) {
+    this.bebeForm.patchValue({ nationaliteBebe: nationality });
+    this.filteredNationalitiesBebe = [];
+  }
+
+  updateAdultsOptions() {
+    this.adultsOptions = Array.from({ length: this.adults }, (_, i) => `Adulte ${i + 1}`);
+  }
+
+  onAdultsChange(event: any) {
+    this.adults = event.target.value;
+    this.updateAdultsOptions();
+  }
+
   selectedIndex: number = 0;
   isTab2Enabled: boolean = false;
   isTab3Enabled: boolean = false;
@@ -48,7 +128,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   departureDate: string = '';
   returnDate: string = '';
   tripType: string = 'one-way';
-  adults: number = 1;
+  adulte: number = 1;
   children: number = 0;
   infants: number = 0;
   travelers: any[] = [];
@@ -64,32 +144,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
   selectedTravelerIndex: number = 0;
   selectedTravelerType: string = 'Adulte';
   paymentMessage: string = '';
-
-  constructor(private snackBar: MatSnackBar, private amadeusService: AmadeusService) {}
-
-  ngOnInit() {
-    this.filteredOptions = this.departureControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filterOptions(value, 'departure'))
-    );
-
-    this.filteredDestinationOptions = this.destinationControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filterOptions(value, 'destination'))
-    );
-
-    this.departureControl.valueChanges.subscribe(value => {
-      this.departure = this.getCityCode(value);
-      this.updateFilteredOptions();
-    });
-
-    this.destinationControl.valueChanges.subscribe(value => {
-      this.destination = this.getCityCode(value);
-      this.updateFilteredOptions();
-      this.onDestinationChange();
-    });
-    this.travelers = this.getTravelers();
-  }
 
   filterOptions(value: string, type: string): any[] {
     if (!value) {
@@ -179,40 +233,41 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.returnFlights = [];
   
     try {
-      console.log('Fetching flights with params:', {
-        departure: this.departure,
-        destination: this.destination,
-        departureDate: this.departureDate,
-        returnDate: this.returnDate,
-        adults: this.adults,
-        children: this.children
-      });
-  
       const today = new Date();
+      let startDate = new Date(this.departureDate);
+      let returnStartDate = new Date(this.returnDate);
   
+      if (this.departureDate === this.today) {
+        startDate = today;
+      } else if (new Date(this.departureDate).getTime() - today.getTime() <= 24 * 60 * 60 * 1000) {
+        startDate = today;
+      } else if (new Date(this.departureDate).getTime() - today.getTime() <= 2 * 24 * 60 * 60 * 1000) {
+        startDate = today;
+      }
       // Fetch flights for the selected date and the six days around it
-      for (let i = -3; i <= 3; i++) {
-        const date = this.adjustDate(this.departureDate, i);
-        const dateObj = new Date(date);
-        if (dateObj >= today) {
+      for (let i = 0; i < 7; i++) {
+        const date = this.adjustDate(startDate, i);
           const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
           this.flights.push(...dayFlights);
-        }
       }
-  
       if (this.tripType === 'round-trip') {
-        for (let i = -3; i <= 3; i++) {
-          const date = this.adjustDate(this.returnDate, i);
-          const dateObj = new Date(date);
-          if (dateObj >= today) {
+        if (this.returnDate === this.today) {
+          returnStartDate = today;
+        } else if (new Date(this.returnDate).getTime() - today.getTime() <= 24 * 60 * 60 * 1000) {
+          returnStartDate = today;
+        } else if (new Date(this.returnDate).getTime() - today.getTime() <= 2 * 24 * 60 * 60 * 1000) {
+          returnStartDate = today;
+        }
+  
+        for (let i = 0; i < 7; i++) {
+          const date = this.adjustDate(returnStartDate, i);
             const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
             this.returnFlights.push(...dayReturnFlights);
-          }
         }
       }
   
       this.isTab2Enabled = true;
-      this.selectedIndex = 1; 
+      this.selectedIndex = 1;
     } catch (error) {
       console.error('Error fetching flight offers:', error);
       this.showError('Erreur lors de la recherche des vols.');
@@ -223,15 +278,11 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.travelers = this.getTravelers(); // Initialize travelers array based on the number of adults and children
   }
   
-  
-  private adjustDate(dateString: string, days: number): string {
-    const date = new Date(dateString);
+  private adjustDate(startDate: Date, days: number): string {
+    const date = new Date(startDate);
     date.setDate(date.getDate() + days);
     return date.toISOString().split('T')[0];
   }
-  
-  
-  
   
   
   onSubmitBebe() {
@@ -239,32 +290,29 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.enableTab4();
   }
 
-
-  // amadeus.service.ts
-
-async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
-  const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
-  return flightOffers.data.map((offer: any) => {
-    const segments = offer.itineraries[0].segments;
-    const departureSegment = segments[0];
-    const arrivalSegment = segments[segments.length - 1];
-
-    return {
-      departureCode: departureSegment.departure.iataCode,
-      destinationCode: arrivalSegment.arrival.iataCode,
-      carrier: offer.validatingAirlineCodes[0],
-      price: parseFloat(offer.price.total), // Ensure price is a number
-      departureTime: departureSegment.departure.at,
-      arrivalTime: arrivalSegment.arrival.at,
-      duration: offer.itineraries[0].duration,
-      stops: segments.length - 1,
-      date: departureSegment.departure.at,
-      available: true
-    };
-  });
-}
-
-
+  async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
+    const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
+    console.log(flightOffers);
+    return flightOffers.data.map((offer: any) => {
+      const segments = offer.itineraries[0].segments;
+      const departureSegment = segments[0];
+      const arrivalSegment = segments[segments.length - 1];
+  
+      return {
+        departureCode: departureSegment.departure.iataCode,
+        destinationCode: arrivalSegment.arrival.iataCode,
+        carrier: offer.validatingAirlineCodes[0],
+        price: parseFloat(offer.price.total), // Ensure price is a number
+        departureTime: departureSegment.departure.at,
+        arrivalTime: arrivalSegment.arrival.at,
+        duration: offer.itineraries[0].duration,
+        stops: segments.length - 1,
+        date: departureSegment.departure.at,
+        available: true
+      };
+    });
+  }
+  
   showError(message: string) {
     this.snackBar.open(message, 'Fermer', {
       duration: 5000,

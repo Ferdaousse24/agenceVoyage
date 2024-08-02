@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LOCALE_ID } from '@angular/core';
@@ -23,7 +23,7 @@ interface Flight {
   styleUrls: ['./recuperation-vols.component.css'],
   providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
 })
-export class RecuperationVolsComponent implements OnChanges {
+export class RecuperationVolsComponent implements OnInit, OnChanges {
   @Input() flights: Flight[] = [];
   @Input() returnFlights: Flight[] = [];
   @Input() departure!: string;
@@ -48,13 +48,20 @@ export class RecuperationVolsComponent implements OnChanges {
 
   agencyFee: number = 40;  // Ajoutez les frais d'agence ici
 
+  ngOnInit() {
+    if (this.flights.length > 0) {
+      this.selectDefaultFlight();
+    }
+    if (this.returnFlights.length > 0) {
+      this.selectDefaultReturnFlight();
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flights'] && this.flights.length > 0) {
-      console.log("Received flights: ", this.flights);
       this.selectDefaultFlight();
     }
     if (changes['returnFlights'] && this.returnFlights.length > 0) {
-      console.log("Received return flights: ", this.returnFlights);
       this.selectDefaultReturnFlight();
     }
     if (changes['departureDate'] && changes['departureDate'].currentValue) {
@@ -77,32 +84,64 @@ export class RecuperationVolsComponent implements OnChanges {
     this.selectedFlightChange.emit(flight);
   }
 
-  selectDefaultFlight() {  
-    const middleIndex = 3; 
-    const departureDateString = new Date(this.departureDate).toISOString().split('T')[0];
-    const selectedFlightIndex = this.flights.findIndex(f => new Date(f.date).toISOString().split('T')[0] === departureDateString);
-    
-    if (selectedFlightIndex !== -1) {
-      this.selectFlight(this.flights[selectedFlightIndex], selectedFlightIndex);
-    } else {
-      this.selectFlight(this.flights[middleIndex], middleIndex);
+  selectDefaultFlight() {
+    const selectedDepartureDate = new Date(this.departureDate).toISOString().split('T')[0];
+
+    let defaultFlightIndex = this.flights.findIndex(flight => {
+      const flightDate = new Date(flight.date).toISOString().split('T')[0];
+      return flightDate === selectedDepartureDate;
+    });
+
+    if (defaultFlightIndex === -1) {
+      // Si aucune correspondance exacte n'est trouvée, choisissez le vol le plus proche
+      let closestDateDiff = Infinity;
+      this.flights.forEach((flight, index) => {
+        const flightDate = new Date(flight.date).toISOString().split('T')[0];
+        const dateDiff = Math.abs(new Date(flightDate).getTime() - new Date(selectedDepartureDate).getTime());
+        if (dateDiff < closestDateDiff) {
+          closestDateDiff = dateDiff;
+          defaultFlightIndex = index;
+        }
+      });
+    }
+
+    if (defaultFlightIndex !== -1) {
+      this.selectFlight(this.flights[defaultFlightIndex], defaultFlightIndex);
     }
   }
 
   selectDefaultReturnFlight() {
-    const middleIndex = 3;
-    const selectedReturnFlightIndex = this.returnFlights.findIndex(f => f.date.split('T')[0] === this.returnDate.split('T')[0]);
-    this.selectReturnFlight(this.returnFlights[selectedReturnFlightIndex !== -1 ? selectedReturnFlightIndex : middleIndex], selectedReturnFlightIndex !== -1 ? selectedReturnFlightIndex : middleIndex);
+    const selectedReturnDate = new Date(this.returnDate).toISOString().split('T')[0];
+
+    let defaultReturnFlightIndex = this.returnFlights.findIndex(flight => {
+      const flightDate = new Date(flight.date).toISOString().split('T')[0];
+      return flightDate === selectedReturnDate;
+    });
+
+    if (defaultReturnFlightIndex === -1) {
+      // Si aucune correspondance exacte n'est trouvée, choisissez le vol le plus proche
+      let closestDateDiff = Infinity;
+      this.returnFlights.forEach((flight, index) => {
+        const flightDate = new Date(flight.date).toISOString().split('T')[0];
+        const dateDiff = Math.abs(new Date(flightDate).getTime() - new Date(selectedReturnDate).getTime());
+        if (dateDiff < closestDateDiff) {
+          closestDateDiff = dateDiff;
+          defaultReturnFlightIndex = index;
+        }
+      });
+    }
+
+    if (defaultReturnFlightIndex !== -1) {
+      this.selectReturnFlight(this.returnFlights[defaultReturnFlightIndex], defaultReturnFlightIndex);
+    }
   }
 
   handleFlightSelection(flight: Flight, index: number) {
-    this.selectedDepartureFlight = flight;
-    this.selectedIndex = index;
+    this.selectFlight(flight, index);
   }
 
   handleReturnFlightSelection(flight: Flight, index: number) {
-    this.selectedReturnFlight = flight;
-    this.selectedReturnIndex = index;
+    this.selectReturnFlight(flight, index);
   }
 
   onFlightSelected() {
@@ -120,16 +159,13 @@ export class RecuperationVolsComponent implements OnChanges {
 
   calculateTotalPrice(): number {
     let totalPrice = 0;
-  
+
     if (this.selectedDepartureFlight && this.selectedReturnFlight) {
-      console.log(parseFloat(this.selectedDepartureFlight.price as any));
-      console.log(parseFloat(this.selectedReturnFlight.price as any));
       totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + parseFloat(this.selectedReturnFlight.price as any) + this.agencyFee;
-      console.log(totalPrice);
     } else if (this.selectedDepartureFlight) {
       totalPrice = parseFloat(this.selectedDepartureFlight.price as any) + this.agencyFee;
     }
-  
+
     return parseFloat(totalPrice.toFixed(2));
   }
 

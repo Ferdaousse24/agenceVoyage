@@ -63,7 +63,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="adults">Nombre d'adultes *</label>
-              <input type="number" id="adults" class="form-control" [(ngModel)]="adults" name="adults" min="1" required>
+              <input type="number" id="adults" class="form-control" [(ngModel)]="adults" (change)="onAdultsChange($event)" name="adults" min="1" required>
             </div>
 
             <div class="form-group">
@@ -132,38 +132,43 @@
               (formValid)="enableTab4()">
             </app-voyageur>
             <div *ngIf="traveler.type === 'Bébé'">
-              <form (ngSubmit)="onSubmitBebe()" #bebeForm="ngForm">
+              <form (ngSubmit)="onSubmitBebe()" [formGroup]="bebeForm">
                 <div class="form-row">
                   <div class="form-group">
                     <label for="voyagerAvec">Voyager avec *</label>
-                    <select id="voyagerAvec" class="form-control" required>
-                      <option value="parent1">Parent 1</option>
-                      <option value="parent2">Parent 2</option>
+                    <select id="voyagerAvec" class="form-control" formControlName="voyagerAvec" required>
+                      <option *ngFor="let option of adultsOptions" [value]="option">{{ option }}</option>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="prenomBebe">Prénom *</label>
-                    <input type="text" id="prenomBebe" class="form-control" name="prenomBebe" required>
+                    <input type="text" id="prenomBebe" class="form-control" formControlName="prenomBebe" required>
                   </div>
                   <div class="form-group">
                     <label for="nomBebe">Nom *</label>
-                    <input type="text" id="nomBebe" class="form-control" name="nomBebe" required>
+                    <input type="text" id="nomBebe" class="form-control" formControlName="nomBebe" required>
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
                     <label for="nationaliteBebe">Nationalité *</label>
-                    <input type="text" id="nationaliteBebe" class="form-control" name="nationaliteBebe" required>
+                    <input type="text" id="nationaliteBebe" class="form-control" formControlName="nationaliteBebe" (input)="filterNationalitiesBebe($event)" required>
+                    <div class="autocomplete-items" *ngIf="filteredNationalitiesBebe.length > 0">
+                      <div *ngFor="let nationality of filteredNationalitiesBebe" (click)="selectNationalityBebe(nationality)">
+                        {{ nationality }}
+                      </div>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="dateNaissanceBebe">Date de naissance *</label>
-                    <input type="date" id="dateNaissanceBebe" class="form-control" name="dateNaissanceBebe" required>
+                    <input type="date" id="dateNaissanceBebe" class="form-control" formControlName="dateNaissanceBebe" [max]="maxBirthDate" required>
                   </div>
                 </div>
                 <div class="form-row">
-                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                  <button type="submit" class="btn btn-primary" [disabled]="!bebeForm.valid">Enregistrer</button>
                 </div>
               </form>
+              
             </div>
           </div>
         </ng-container>
