@@ -167,6 +167,10 @@ export class FiltreRechercheVolsComponent implements OnInit {
     const city = this.cities.find(c => c.name === cityName);
     return city ? city.code : '';
   }
+  getCityName(code: string): string {
+    const city = this.cities.find(c => c.code === code);
+    return city ? city.name : code;
+  }
 
   updateFilteredOptions() {
     this.filteredOptions = of(this.filterOptions(this.departureControl.value, 'departure'));
@@ -236,34 +240,79 @@ export class FiltreRechercheVolsComponent implements OnInit {
       const today = new Date();
       let startDate = new Date(this.departureDate);
       let returnStartDate = new Date(this.returnDate);
-  
-      if (this.departureDate === this.today) {
+
+      const threeDaysLater = new Date(today);
+      threeDaysLater.setDate(today.getDate() + 3);
+
+      if (new Date(this.departureDate) <= today) {
         startDate = today;
       } else if (new Date(this.departureDate).getTime() - today.getTime() <= 24 * 60 * 60 * 1000) {
         startDate = today;
       } else if (new Date(this.departureDate).getTime() - today.getTime() <= 2 * 24 * 60 * 60 * 1000) {
         startDate = today;
+      } else if (new Date(this.departureDate) >= threeDaysLater) {
+        startDate.setDate(startDate.getDate() - 3);
       }
+      console.log(startDate);
       // Fetch flights for the selected date and the six days around it
       for (let i = 0; i < 7; i++) {
         const date = this.adjustDate(startDate, i);
-          const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
-          this.flights.push(...dayFlights);
+        const dayFlights = await this.callAmadeus(this.departure, this.destination, date, this.adults);
+        console.log(date, " : ", dayFlights)
+        if (dayFlights.length === 0) {
+          this.flights.push({
+              departureCode: this.departure,
+              destinationCode: this.destination,
+              date,
+              available: false,
+              carrier: '',
+              price: 0,
+              departureTime: date,
+              arrivalTime: '',
+              duration: '',
+              stops: 0
+          });
+        } else {
+            this.flights.push(...dayFlights);
+        }
       }
+      console.log(this.flights);
+
       if (this.tripType === 'round-trip') {
-        if (this.returnDate === this.today) {
+        const returnThreeDaysLater = new Date(today);
+        returnThreeDaysLater.setDate(today.getDate() + 3);
+
+        if (new Date(this.returnDate) <= today) {
           returnStartDate = today;
         } else if (new Date(this.returnDate).getTime() - today.getTime() <= 24 * 60 * 60 * 1000) {
           returnStartDate = today;
         } else if (new Date(this.returnDate).getTime() - today.getTime() <= 2 * 24 * 60 * 60 * 1000) {
           returnStartDate = today;
+        } else if (new Date(this.returnDate) >= returnThreeDaysLater) {
+          returnStartDate.setDate(returnStartDate.getDate() - 3);
         }
-  
+        console.log(returnStartDate);
         for (let i = 0; i < 7; i++) {
           const date = this.adjustDate(returnStartDate, i);
-            const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
-            this.returnFlights.push(...dayReturnFlights);
+          const dayReturnFlights = await this.callAmadeus(this.destination, this.departure, date, this.adults);
+          if (dayReturnFlights.length === 0) {
+            this.returnFlights.push({
+                departureCode: this.destination,
+                destinationCode: this.departure,
+                date,
+                available: false,
+                carrier: '',
+                price: 0,
+                departureTime: date,
+                arrivalTime: '',
+                duration: '',
+                stops: 0
+            });
+          } else {
+              this.returnFlights.push(...dayReturnFlights);
+          }
         }
+        console.log(this.returnFlights);
       }
   
       this.isTab2Enabled = true;
@@ -283,6 +332,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
     date.setDate(date.getDate() + days);
     return date.toISOString().split('T')[0];
   }
+
   
   
   onSubmitBebe() {
@@ -292,7 +342,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   async callAmadeus(departure: string, destination: string, date: string, adults: number): Promise<any[]> {
     const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults);
-    console.log(flightOffers);
+    //console.log(flightOffers);
     return flightOffers.data.map((offer: any) => {
       const segments = offer.itineraries[0].segments;
       const departureSegment = segments[0];
