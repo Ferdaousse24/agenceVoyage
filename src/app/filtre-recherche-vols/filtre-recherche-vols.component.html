@@ -90,11 +90,13 @@
 
   <mat-tab label="2- Choisir le vol" [disabled]="!isTab2Enabled">
     <app-recuperation-vols
-      *ngIf="(tripType === 'one-way' && flights.length > 0) || (tripType === 'round-trip' && flights.length > 0 && returnFlights.length > 0)"
+      *ngIf="(tripType === 'one-way' && flights.length === 7) || (tripType === 'round-trip' && flights.length === 7 && returnFlights.length === 7)"
       [flights]="flights"
       [returnFlights]="returnFlights"
       [departure]="departure"
       [destination]="destination"
+      [departureName]="getCityName(departure)"
+      [destinationName]="getCityName(destination)"
       [departureDate]="departureDate"
       [returnDate]="returnDate"
       [tripType]="tripType"
