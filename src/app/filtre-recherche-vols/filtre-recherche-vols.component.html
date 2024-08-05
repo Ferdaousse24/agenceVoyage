@@ -132,6 +132,7 @@
                         [dateRetour]="returnDate"
                         [tripType]="tripType"
                         [isLastPassenger]="i === travelers.length - 1"
+                        [formGroup]="travelersForms[i]"
                         (formValid)="onFormValid(i)">
                     </app-voyageur>
                     <div *ngIf="traveler.type === 'Bébé'">

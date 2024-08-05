@@ -18,17 +18,9 @@ export class VoyageurComponent implements OnInit {
   @Input() dateRetour!: string; // Utilisation de string pour la liaison avec l'input date
   @Input() tripType!: string; // Ajout de l'input tripType
   @Input() isLastPassenger: boolean = false; // Ajout pour indiquer si c'est le dernier passager
+  @Input() formGroup!: FormGroup; // FormGroup en entrée
   bebeForm: FormGroup;
-  title: string = '';
-  firstName: string = '';
-  lastName: string = '';
-  nationality: string = '';
-  birthDate: string = '';
-  passportNumber: string = '';
-  phoneNumber: string = ''; // Ajout du champ phoneNumber
-  email: string = ''; // Ajout du champ email
-  emailInvalid: boolean = false; // Ajout du flag pour email invalide
-  passportNumberInvalid: boolean = false;
+
   nationalities: string[] = ['Française', 'Canadienne', 'Américaine', 'Algérienne', 'Marocaine'];
   filteredNationalities: string[] = [];
   filteredNationalitiesBebe: string[] = []; // Ajout pour le filtre de nationalité du bébé
@@ -84,19 +76,7 @@ export class VoyageurComponent implements OnInit {
   }
 
   onSubmit() {
-    this.passportNumberInvalid = !this.validatePassportNumber(this.passportNumber);
-    this.emailInvalid = !this.validateEmail(this.email);
-
-    if (!this.passportNumberInvalid && !this.emailInvalid) {
-      const formattedDateDeparture = this.dateDeparture ? this.formatDate(new Date(this.dateDeparture)) : '';
-      const formattedDateRetour = (this.tripType === 'round-trip' && this.dateRetour) ? this.formatDate(new Date(this.dateRetour)) : null;
-      const formattedBirthDate = this.birthDate ? this.formatDate(new Date(this.birthDate)) : '';
-
-      if (!formattedDateDeparture || (this.tripType === 'round-trip' && !formattedDateRetour) || !formattedBirthDate) {
-        console.error('Dates invalides');
-        return;
-      }
-
+    if (this.formGroup.valid) {
       const voyageurInfo = {
         records: [
           {
@@ -104,17 +84,10 @@ export class VoyageurComponent implements OnInit {
               userId: uuidv4(),
               VilleDepart: this.departure,
               villeDestination: this.destination,
-              dateDepart: formattedDateDeparture,
-              dateRetour: this.tripType === 'round-trip' ? formattedDateRetour : null,
+              dateDepart: this.formatDate(new Date(this.dateDeparture)),
+              dateRetour: this.tripType === 'round-trip' ? this.formatDate(new Date(this.dateRetour)) : null,
               allerRetour: this.tripType === 'round-trip',
-              titre: this.title,
-              prenom: this.firstName,
-              nom: this.lastName,
-              nationalite: this.nationality,
-              dateNaissance: formattedBirthDate,
-              numeroPasseport: this.passportNumber,
-              telephone: this.phoneNumber, // Ajout du champ telephone
-              email: this.email // Ajout du champ email
+              ...this.formGroup.value
             }
           }
         ]
@@ -128,27 +101,11 @@ export class VoyageurComponent implements OnInit {
       }).catch(error => {
         console.error('Erreur lors de l\'enregistrement des informations:', error);
       });
-    } else {
-      if (this.passportNumberInvalid) {
-        console.log('Numéro de passeport invalide:', this.passportNumber);
-      }
-      if (this.emailInvalid) {
-        console.log('Email invalide:', this.email);
-      }
     }
-  }
-
-  validateEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 
   formatDate(date: Date): string {
-    if (!date) {
-      console.error('Date is undefined or null');
-      return '';
-    }
-    return date.toISOString().split('T')[0]; // Format YYYY-MM-DD
+    return date.toISOString().split('T')[0];
   }
 
   filterNationalities(event: Event) {
@@ -174,19 +131,12 @@ export class VoyageurComponent implements OnInit {
   }
 
   selectNationality(nationality: string) {
-    this.nationality = nationality;
+    this.formGroup.patchValue({ nationalite: nationality });
     this.filteredNationalities = [];
   }
 
   selectNationalityBebe(nationality: string) {
     this.bebeForm.patchValue({ nationaliteBebe: nationality });
     this.filteredNationalitiesBebe = [];
-  }
-
-  validatePassportNumber(passportNumber: string): boolean {
-    const passportRegex = /^[0-9A-Z]{9}$/;
-    const isValid = passportRegex.test(passportNumber);
-    console.log(`Validating passport number: ${passportNumber}, isValid: ${isValid}`);
-    return isValid;
   }
 }

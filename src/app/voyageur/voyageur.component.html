@@ -1,9 +1,9 @@
 <div class="voyageur-form">
-  <form (ngSubmit)="onSubmit()" #voyageurForm="ngForm">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group">
         <label for="title">Titre *</label>
-        <select id="title" class="form-control" [(ngModel)]="title" name="title" required>
+        <select id="title" class="form-control" formControlName="titre" required>
           <option value="Mr">Mr</option>
           <option value="Mrs">Mrs</option>
           <option value="Ms">Ms</option>
@@ -11,44 +11,44 @@
       </div>
       <div class="form-group">
         <label for="firstName">Prénom *</label>
-        <input type="text" id="firstName" class="form-control" [(ngModel)]="firstName" name="firstName" required>
+        <input type="text" id="firstName" class="form-control" formControlName="prenom" required>
       </div>
       <div class="form-group">
         <label for="lastName">Nom *</label>
-        <input type="text" id="lastName" class="form-control" [(ngModel)]="lastName" name="lastName" required>
+        <input type="text" id="lastName" class="form-control" formControlName="nom" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label for="nationality">Nationalité *</label>
-        <input type="text" id="nationality" class="form-control" [(ngModel)]="nationality" name="nationality" (input)="filterNationalities($event)" required>
+        <input type="text" id="nationality" class="form-control" formControlName="nationalite" (input)="filterNationalities($event)" required>
         <ul *ngIf="filteredNationalities.length > 0" class="autocomplete-list">
           <li *ngFor="let nationality of filteredNationalities" (click)="selectNationality(nationality)">{{ nationality }}</li>
         </ul>
       </div>
       <div class="form-group">
         <label for="birthDate">Date de naissance *</label>
-        <input type="date" id="birthDate" class="form-control" [(ngModel)]="birthDate" name="birthDate" [max]="maxBirthDate" required>
+        <input type="date" id="birthDate" class="form-control" formControlName="dateNaissance" [max]="maxBirthDate" required>
       </div>
       <div class="form-group">
         <label for="passportNumber">Numéro de passeport *</label>
-        <input type="text" id="passportNumber" class="form-control" [(ngModel)]="passportNumber" name="passportNumber" required>
-        <div *ngIf="passportNumberInvalid" class="error-message">Numéro de passeport invalide.</div>
+        <input type="text" id="passportNumber" class="form-control" formControlName="numeroPasseport" required>
+        <div *ngIf="formGroup.get('numeroPasseport')?.invalid && formGroup.get('numeroPasseport')?.touched" class="error-message">Numéro de passeport invalide.</div>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label for="phoneNumber">Numéro de téléphone *</label>
-        <input type="tel" id="phoneNumber" class="form-control" [(ngModel)]="phoneNumber" name="phoneNumber" required>
+        <input type="tel" id="phoneNumber" class="form-control" formControlName="telephone" required>
       </div>
       <div class="form-group">
         <label for="email">Email *</label>
-        <input type="email" id="email" class="form-control" [(ngModel)]="email" name="email" required>
-        <div *ngIf="emailInvalid" class="error-message">Email invalide.</div>
+        <input type="email" id="email" class="form-control" formControlName="email" required>
+        <div *ngIf="formGroup.get('email')?.invalid && formGroup.get('email')?.touched" class="error-message">Email invalide.</div>
       </div>
     </div>
     <div class="form-row">
-      <button type="submit" class="btn btn-primary" [disabled]="!voyageurForm.valid">
+      <button type="submit" class="btn btn-primary" [disabled]="!formGroup.valid">
         {{ isLastPassenger ? 'Enregistrer' : 'Suivant' }}
       </button>
     </div>

@@ -26,7 +26,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  padding: 5px;
+  padding: 10px;
   margin: 0 5px;
   background-color: #46696b94;
   border-radius: 5px;
@@ -48,7 +48,7 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   text-align: center;
-  width: 25%; /* Ajouté pour que les deux divs aient la même largeur */
+  width: 80%; /* Augmenter la largeur pour une meilleure visibilité */
   box-sizing: border-box;
 }
 
@@ -113,4 +113,23 @@
 
 .selectable-flight.selected {
   background-color: #7eadbce3;
+}
+
+.select-button {
+  background-color: #ff4757; /* Couleur de fond correspondant à l'image */
+  border: none;
+  color: white;
+  padding: 10px 20px; /* Ajuster la taille du bouton */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px; /* Bordures arrondies */
+  transition: background-color 0.3s;
+}
+
+.select-button:hover {
+  background-color: #ff6b81; /* Couleur de fond lors du survol */
 }
