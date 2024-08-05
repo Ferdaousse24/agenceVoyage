@@ -17,6 +17,7 @@ export class VoyageurComponent implements OnInit {
   @Input() dateDeparture!: string; // Utilisation de string pour la liaison avec l'input date
   @Input() dateRetour!: string; // Utilisation de string pour la liaison avec l'input date
   @Input() tripType!: string; // Ajout de l'input tripType
+  @Input() isLastPassenger: boolean = false; // Ajout pour indiquer si c'est le dernier passager
   bebeForm: FormGroup;
   title: string = '';
   firstName: string = '';

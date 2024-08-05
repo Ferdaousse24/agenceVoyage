@@ -333,7 +333,18 @@ export class FiltreRechercheVolsComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
-  
+  onFormValid(index: number) {
+    if (index === this.travelers.length - 1) {
+      this.enableTab4();
+    } else {
+      this.selectTraveler(index + 1);
+    }
+  }
+
+  selectTraveler(index: number) {
+    this.selectedTravelerIndex = index;
+    this.selectedTravelerType = this.travelers[index].type;
+  }
   
   onSubmitBebe() {
     console.log("Baby form submitted");
@@ -413,11 +424,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
       travelers.push({ type: 'Bébé' });
     }
     return travelers;
-  }
-
-  selectTraveler(index: number) {
-    this.selectedTravelerIndex = index;
-    this.selectedTravelerType = this.travelers[index].type;
   }
 
   cities = [
