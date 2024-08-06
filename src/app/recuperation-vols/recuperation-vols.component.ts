@@ -23,7 +23,7 @@ interface Flight {
   styleUrls: ['./recuperation-vols.component.css'],
   providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
 })
-export class RecuperationVolsComponent implements  OnChanges {
+export class RecuperationVolsComponent implements OnChanges {
   @Input() flights: Flight[] = [];
   @Input() returnFlights: Flight[] = [];
   @Input() departure!: string;
@@ -38,6 +38,7 @@ export class RecuperationVolsComponent implements  OnChanges {
   @Input() infants!: number;
   @Output() selectedFlightChange = new EventEmitter<Flight>();
   @Output() flightSelected = new EventEmitter<{ totalPrice: number }>();
+  @Output() flightSelectionChanged = new EventEmitter<{ selectedOutboundFlight: Flight, selectedInboundFlight?: Flight }>();
 
   selectedDepartureFlight: Flight | null = null;
   selectedReturnFlight: Flight | null = null;
@@ -69,12 +70,23 @@ export class RecuperationVolsComponent implements  OnChanges {
     this.selectedDepartureFlight = flight;
     this.selectedIndex = index;
     this.selectedFlightChange.emit(flight);
+    this.emitFlightSelection();
   }
 
   selectReturnFlight(flight: Flight, index: number) {
     this.selectedReturnFlight = flight;
     this.selectedReturnIndex = index;
     this.selectedFlightChange.emit(flight);
+    this.emitFlightSelection();
+  }
+
+  emitFlightSelection() {
+    if (this.selectedDepartureFlight) {
+      this.flightSelectionChanged.emit({
+        selectedOutboundFlight: this.selectedDepartureFlight,
+        selectedInboundFlight: this.selectedReturnFlight || undefined
+      });
+    }
   }
 
   selectDefaultFlight() {
@@ -211,7 +223,5 @@ export class RecuperationVolsComponent implements  OnChanges {
     const minutes = minutesMatch ? minutesMatch[1] : '0';
   
     return `${hours} heures et ${minutes} minutes`;
-  }
-  
-  
+  } 
 }

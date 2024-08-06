@@ -7,14 +7,15 @@ import axios from 'axios';
 export class AirtableService {
   private accessToken = 'patRlJ077H181mgww.dece4863cc1b362ff4e0edee12dcbfa141a8ed76eb50bcbbf937d86d2de3bbce';
   private baseId = 'appV1On9FZzTOxnSn'; 
-  private tableName = 'reservation'; 
-  private apiUrl = `https://api.airtable.com/v0/${this.baseId}/${this.tableName}`;
+  private apiUrl = `https://api.airtable.com/v0/${this.baseId}`;
 
   constructor() { }
 
-  async createRecord(record: any) {
+  async createRecord(record: any, tableName: string) {
+    console.log(tableName);
+    console.log(record);
     try {
-      const response = await axios.post(this.apiUrl, record, {
+      const response = await axios.post(`${this.apiUrl}/${tableName}`, record, {
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
           'Content-Type': 'application/json'
@@ -23,6 +24,23 @@ export class AirtableService {
       return response.data;
     } catch (error) {
       console.error('Error creating record in Airtable:', error);
+      throw error;
+    }
+  }
+
+  async findRecordByEmail(email: string) {
+    try {
+      const response = await axios.get(`${this.apiUrl}/Clients`, {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`
+        },
+        params: {
+          filterByFormula: `email="${email}"`
+        }
+      });
+      return response.data.records;
+    } catch (error) {
+      console.error('Error finding record by email in Airtable:', error);
       throw error;
     }
   }

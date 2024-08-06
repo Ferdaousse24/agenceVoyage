@@ -31,7 +31,7 @@ export class AmadeusService {
     }
   }
 
-  async searchFlights(departure: string, destination: string, departureDate: string, adults: number) {
+  async searchFlights(departure: string, destination: string, departureDate: string, adults: number, children: number, infants: number) {
     if (!this.token) {
       throw new Error('No token available');
     }
@@ -41,37 +41,15 @@ export class AmadeusService {
         destinationLocationCode: destination,
         departureDate: departureDate,
         adults: adults,
-        max: 1,
+        children: children,
+        infants: infants,
+        max: 1
       },
       headers: {
         Authorization: `Bearer ${this.token}`,
       }
     });
+    console.log(response);
     return response.data;
-  }
-
-  async searchFlightsForMultipleDates(departure: string, destination: string, dates: string[], adults: number) {
-    if (!this.token) {
-      throw new Error('No token available');
-    }
-
-    const requests = dates.map(date => 
-      axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
-        params: {
-          originLocationCode: departure,
-          destinationLocationCode: destination,
-          departureDate: date,
-          adults: adults,
-          max: 1,
-        },
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        }
-      })
-    );
-
-    const responses = await Promise.all(requests);
-
-    return responses.map(response => response.data);
   }
 }

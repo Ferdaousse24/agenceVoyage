@@ -104,7 +104,8 @@
       [children]="children"
       [infants]="infants"
       (selectedFlightChange)="onSelectedFlightChange($event)"
-      (flightSelected)="enableTab3()">
+      (flightSelected)="enableTab3()"
+      (flightSelectionChanged)="onSelectedFlightChange($event)">
     </app-recuperation-vols>
     <p *ngIf="flights.length === 0 || (tripType === 'round-trip' && returnFlights.length === 0)">
       Il n'y a pas de vols entre ces deux villes.
@@ -113,71 +114,34 @@
 
   <mat-tab label="3- Information voyageur" [disabled]="!isTab3Enabled">
     <div class="traveler-navigation">
-        <div class="nav-menu">
-            <div *ngFor="let traveler of travelers; let i = index" [class.active]="selectedTravelerIndex === i">
-                <button (click)="selectTraveler(i)">
-                    {{ traveler.type }} {{ i + 1 }}
-                </button>
-            </div>
+      <div class="nav-menu">
+        <div *ngFor="let traveler of travelers; let i = index" [class.active]="selectedTravelerIndex === i">
+          <button (click)="selectTraveler(i)">
+            {{ traveler.type }} {{ i + 1 }}
+          </button>
         </div>
-        <div class="traveler-form">
-            <ng-container *ngFor="let traveler of travelers; let i = index">
-                <div *ngIf="selectedTravelerIndex === i">
-                    <h2>Informations {{ traveler.type }} {{ i + 1 }}</h2>
-                    <app-voyageur
-                        *ngIf="traveler.type !== 'Bébé'"
-                        [departure]="departure"
-                        [destination]="destination"
-                        [dateDeparture]="departureDate"
-                        [dateRetour]="returnDate"
-                        [tripType]="tripType"
-                        [isLastPassenger]="i === travelers.length - 1"
-                        [formGroup]="travelersForms[i]"
-                        (formValid)="onFormValid(i)">
-                    </app-voyageur>
-                    <div *ngIf="traveler.type === 'Bébé'">
-                        <form (ngSubmit)="onSubmitBebe()" [formGroup]="bebeForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="voyagerAvec">Voyager avec *</label>
-                                    <select id="voyagerAvec" class="form-control" formControlName="voyagerAvec" required>
-                                        <option *ngFor="let option of adultsOptions" [value]="option">{{ option }}</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="prenomBebe">Prénom *</label>
-                                    <input type="text" id="prenomBebe" class="form-control" formControlName="prenomBebe" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nomBebe">Nom *</label>
-                                    <input type="text" id="nomBebe" class="form-control" formControlName="nomBebe" required>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="nationaliteBebe">Nationalité *</label>
-                                    <input type="text" id="nationaliteBebe" class="form-control" formControlName="nationaliteBebe" (input)="filterNationalitiesBebe($event)" required>
-                                    <div class="autocomplete-items" *ngIf="filteredNationalitiesBebe.length > 0">
-                                        <div *ngFor="let nationality of filteredNationalitiesBebe" (click)="selectNationalityBebe(nationality)">
-                                            {{ nationality }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="dateNaissanceBebe">Date de naissance *</label>
-                                    <input type="date" id="dateNaissanceBebe" class="form-control" formControlName="dateNaissanceBebe" [max]="maxBirthDate" required>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <button type="submit" class="btn btn-primary" [disabled]="!bebeForm.valid">Enregistrer</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </ng-container>
-        </div>
+      </div>
+      <div class="traveler-form">
+        <ng-container *ngFor="let traveler of travelers; let i = index">
+          <div *ngIf="selectedTravelerIndex === i">
+            <h2>Informations {{ traveler.type }} {{ i + 1 }}</h2>
+            <app-voyageur
+              [departure]="departure"
+              [destination]="destination"
+              [dateDeparture]="departureDate"
+              [dateRetour]="returnDate"
+              [tripType]="tripType"
+              [isLastPassenger]="i === travelers.length - 1"
+              [formGroup]="travelersForms[i]"
+              (formValid)="onFormValid()"
+              (savePassenger)="savePassengerData($event)"
+              (next)="onNextTraveler(i)">
+            </app-voyageur>
+          </div>
+        </ng-container>
+      </div>
     </div>
-</mat-tab>
+  </mat-tab>
 
   <mat-tab label="4- Paiement" [disabled]="!isTab4Enabled">
     <app-paiement></app-paiement>
