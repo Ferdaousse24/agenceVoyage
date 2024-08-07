@@ -1,4 +1,15 @@
 <div class="payment-container">
+  <div class="payment-summary">
+    <h2>Résumé du paiement</h2>
+    <div *ngFor="let traveler of travelers; let i = index">
+      <h3>{{ traveler.type }} {{ i + 1 }}</h3>
+      <p>Prix de base: {{ traveler.price.base }} €</p>
+      <p>Taxes et frais: {{ traveler.price.fees }} €</p>
+      <p>Total: {{ traveler.price.total }} €</p>
+    </div>
+    <h3>Total général: {{ totalPrice }} €</h3>
+  </div>
+  
   <h2>Page de Paiement</h2>
   <button (click)="redirectToPayment()" class="btn btn-primary">Passer au paiement</button>
 </div>

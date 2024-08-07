@@ -1,4 +1,3 @@
-filtre-recherche-vols.component.css
 .search-filter {
   padding: 20px;
   border-radius: 5px;
@@ -79,8 +78,8 @@ mat-form-field {
 }
 
 .btn-primary {
-  background-color: #ff3366;
-  border-color: #ff3366;
+  background-color: rgb(249, 192, 43);
+  border-color: rgb(249, 192, 43);
   color: white;
   padding: 10px 20px;
   font-size: 16px;
@@ -89,8 +88,8 @@ mat-form-field {
 }
 
 .btn-primary:hover {
-  background-color: #e62957;
-  border-color: #e62957;
+  background-color: rgb(249, 192, 43);
+  border-color: rgb(249, 192, 43);
 }
 
 .btn-secondary {

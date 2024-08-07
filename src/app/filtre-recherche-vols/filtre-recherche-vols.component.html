@@ -144,6 +144,9 @@
   </mat-tab>
 
   <mat-tab label="4- Paiement" [disabled]="!isTab4Enabled">
-    <app-paiement></app-paiement>
+    <app-paiement
+      [travelers]="travelersPricing"
+      [totalPrice]="totalPrice">
+    </app-paiement>
   </mat-tab>
 </mat-tab-group>

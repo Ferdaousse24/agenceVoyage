@@ -52,6 +52,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
   reservationId: string = ''; // ID du reservation
   selectedOutboundFlight: any = null; // Vol aller sélectionné
   selectedInboundFlight: any = null; // Vol retour sélectionné
+  travelersPricing: any[] = [];
 
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private amadeusService: AmadeusService, private airtableService: AirtableService) {
     this.updateAdultsOptions();
@@ -132,6 +133,50 @@ export class FiltreRechercheVolsComponent implements OnInit {
   selectedTravelerType: string = 'Adulte';
   paymentMessage: string = '';
   agencyFee: number = 40;
+
+  // Ajouter une nouvelle variable pour stocker les détails des prix
+  priceDetails: any[] = [];
+
+  // Méthode pour mettre à jour les détails des prix
+  updatePriceDetails() {
+    this.priceDetails = [];
+
+    if (this.selectedOutboundFlight) {
+      this.priceDetails.push({
+        type: 'Outbound',
+        flight: this.selectedOutboundFlight
+      });
+    }
+
+    if (this.selectedInboundFlight) {
+      this.priceDetails.push({
+        type: 'Inbound',
+        flight: this.selectedInboundFlight
+      });
+    }
+
+    // Ajouter les frais d'agence
+    this.priceDetails.push({
+      type: 'AgencyFee',
+      amount: this.agencyFee * (this.selectedInboundFlight ? 2 : 1)
+    });
+
+    // Calculer le total
+    this.totalPrice = this.calculateTotalPrice();
+  }
+
+  // Méthode pour calculer le prix total
+  calculateTotalPrice(): number {
+    let totalPrice = 0;
+
+    if (this.selectedOutboundFlight && this.selectedInboundFlight) {
+      totalPrice = parseFloat(this.selectedOutboundFlight.price as any) + parseFloat(this.selectedInboundFlight.price as any) + (this.agencyFee * 2);
+    } else if (this.selectedOutboundFlight) {
+      totalPrice = parseFloat(this.selectedOutboundFlight.price as any) + this.agencyFee;
+    }
+
+    return parseFloat(totalPrice.toFixed(2));
+  }
 
   filterOptions(value: string, type: string): any[] {
     if (!value) {
@@ -421,9 +466,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
           voyager_avec: ''
         }
       }));
-  
-      const passengerInfo = { records: passengerRecords };  
-      console.log('Passenger Info à envoyer:', passengerInfo);  
+
+      const passengerInfo = { records: passengerRecords };
+      console.log('Passenger Info à envoyer:', passengerInfo);
       this.airtableService.createRecord(passengerInfo, 'Passagers');
     } catch(error) {
       console.error('Erreur lors de l\'enregistrement des passagers:', error);
@@ -433,7 +478,7 @@ export class FiltreRechercheVolsComponent implements OnInit {
 
   persistAllVols() {
     const flightRecords = [];
-  
+
     const outboundFlightInfo = {
       fields: {
         vol_id: uuidv4(),
@@ -449,9 +494,9 @@ export class FiltreRechercheVolsComponent implements OnInit {
         available: this.selectedOutboundFlight?.available || true
       }
     };
-  
+
     flightRecords.push(outboundFlightInfo);
-  
+
     if (this.tripType === 'round-trip') {
       const inboundFlightInfo = {
         fields: {
@@ -468,14 +513,14 @@ export class FiltreRechercheVolsComponent implements OnInit {
           available: this.selectedInboundFlight?.available || true
         }
       };
-  
+
       flightRecords.push(inboundFlightInfo);
     }
-  
+
     const flightInfo = { records: flightRecords };
-  
+
     console.log('Flight Info à envoyer:', flightInfo);
-  
+
     this.airtableService.createRecord(flightInfo, 'Vols').then(() => {
       this.enableTab4();
     });
@@ -491,7 +536,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
   }
 
   async callAmadeus(departure: string, destination: string, date: string, adults: number, childrens: number, infants: number): Promise<any[]> {
-    console.log("enfants");
     const flightOffers = await this.amadeusService.searchFlights(departure, destination, date, adults, childrens, infants);
     return flightOffers.data.map((offer: any) => {
       const segments = offer.itineraries[0].segments;
@@ -503,6 +547,12 @@ export class FiltreRechercheVolsComponent implements OnInit {
         destinationCode: arrivalSegment.arrival.iataCode,
         carrier: offer.validatingAirlineCodes[0],
         price: parseFloat(offer.price.total), // Ensure price is a number
+        prices: offer.travelerPricings.map((pricing: any) => ({
+          type: pricing.travelerType,
+          base: parseFloat(pricing.price.base),
+          fees: parseFloat(pricing.price.total) - parseFloat(pricing.price.base),
+          total: parseFloat(pricing.price.total)
+        })),
         departureTime: departureSegment.departure.at,
         arrivalTime: arrivalSegment.arrival.at,
         duration: offer.itineraries[0].duration,
@@ -528,29 +578,17 @@ export class FiltreRechercheVolsComponent implements OnInit {
     this.isTab4Enabled = true;
     this.selectedIndex = 3;
     this.paymentMessage = "Veuillez cliquer sur le bouton ci-dessous pour procéder au paiement.";
+    this.updatePriceDetails(); // Mettre à jour les détails des prix lors de l'activation de l'onglet de paiement
   }
 
   onSelectedFlightChange(flight: any) {
-    console.log('Selected flight:', flight);
     if (this.tripType === 'one-way') {
       this.selectedOutboundFlight = flight.selectedOutboundFlight;
     } else if (this.tripType === 'round-trip') {
       this.selectedOutboundFlight = flight.selectedOutboundFlight;
-      this.selectedInboundFlight = flight.selectedInboundFlight;      
+      this.selectedInboundFlight = flight.selectedInboundFlight;
     }
-    this.totalPrice = this.calculateTotalPrice();
-  }
-
-  calculateTotalPrice(): number {
-    let totalPrice = 0;
-
-    if (this.selectedOutboundFlight && this.selectedInboundFlight) {
-      totalPrice = parseFloat(this.selectedOutboundFlight.price as any) + parseFloat(this.selectedInboundFlight.price as any) + (this.agencyFee * 2);
-    } else if (this.selectedOutboundFlight) {
-      totalPrice = parseFloat(this.selectedOutboundFlight.price as any) + this.agencyFee;
-    }
-
-    return parseFloat(totalPrice.toFixed(2));
+    this.updatePriceDetails();
   }
 
   onFlightSelected() {
@@ -605,4 +643,6 @@ export class FiltreRechercheVolsComponent implements OnInit {
       this.selectedTravelerIndex = index + 1;
     }
   }
+
+  
 }

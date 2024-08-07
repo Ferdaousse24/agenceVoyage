@@ -15,16 +15,18 @@ export class AccueilComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
-      const menuToggle = document.getElementById('menu-toggle');
-      const navbar = document.getElementById('navbar');
+      this.initializeMenuToggle();
+    }
+  }
 
-      if (menuToggle && navbar) {
-        menuToggle.addEventListener('click', () => {
-          console.log('Menu toggle clicked');
-          navbar.classList.toggle('active');
-          console.log('Navbar classes:', navbar.className);
-        });
-      }
+  private initializeMenuToggle(): void {
+    const menuToggle = document.getElementById('menu-toggle');
+    const navbar = document.getElementById('navbar');
+
+    if (menuToggle && navbar) {
+      menuToggle.addEventListener('click', () => {
+        navbar.classList.toggle('active');
+      });
     }
   }
 }

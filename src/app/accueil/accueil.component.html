@@ -1,31 +1,40 @@
 <div class="header-container">
-  <header class="text-white text-center py-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
-    <div class="container header-content d-flex flex-column flex-md-row justify-content-between align-items-center">
+  <header class="text-white text-center py-2 d-flex justify-content-between align-items-center">
+    <div class="header-content d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center contact-info">
-        <button class="menu-icon" id="menu-toggle">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </button>
-        <div class=" text-md-left">
+        <div class="icon-container">
+          <i class="fas fa-mobile-alt phone-icon"></i>
+        </div>
+        <div>
           <span>Pour plus d'informations :</span>
           <a href="tel:+33456702889" class="text-white">
             +33 (0) 456 702 889
           </a>
         </div>
       </div>
-      <a href="#" class="mx-auto">
-        <img src="https://www.izysafar.com/wp-content/uploads/2023/06/logo-blanc-izysafar-small.png" alt="Logo" class="logo mb-2 mb-md-0">
+      <a href="#" class="logo-link">
+        <img src="https://www.izysafar.com/wp-content/uploads/2023/06/logo-blanc-izysafar-small.png" alt="Logo Izysafar" class="logo mb-2 mb-md-0">
       </a>
-      <nav class="nav d-flex flex-column flex-md-row" id="navbar">
-        <a class="nav-link text-white" href="#">Accueil</a>
-        <a class="nav-link text-white" href="#">IzySafar</a>
-        <a class="nav-link text-white" href="#">Réservation</a>
-        <a class="nav-link text-white" href="#">Pèlerinage</a>
-        <a class="nav-link text-white" href="#">Contact</a>
-      </nav>
+      <div class="d-flex align-items-center">
+        <button class="menu-icon" id="menu-toggle" aria-label="Toggle navigation menu">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </button>
+        <nav class="nav" id="navbar" aria-label="Main navigation">
+          <a class="nav-link text-white" href="#">Accueil</a>
+          <a class="nav-link text-white" href="#">IzySafar</a>
+          <a class="nav-link text-white" href="#">Réservation</a>
+          <a class="nav-link text-white" href="#">Pèlerinage</a>
+          <a class="nav-link text-white" href="#">Contact</a>
+        </nav>
+      </div>
     </div>
   </header>
+  <!-- Nouvel élément CTA -->
+  <div class="cta-button">
+    RÉSERVEZ VOTRE VOYAGE
+  </div>
   <section class="hero-section d-flex align-items-center">
     <div class="container text-center text-white">
       <!-- Insertion du composant de recherche de vols -->
