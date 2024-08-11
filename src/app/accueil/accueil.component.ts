@@ -2,13 +2,15 @@ import { Component, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { FiltreRechercheVolsComponent } from '../filtre-recherche-vols/filtre-recherche-vols.component';
+import { OrchestrateurComponent } from '../orchestrateur/orchestrateur.component';
 
 @Component({
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.css'],
   standalone: true,
-  imports: [CommonModule, FiltreRechercheVolsComponent],
+  //imports: [CommonModule, FiltreRechercheVolsComponent],
+  imports: [CommonModule, OrchestrateurComponent],
 })
 export class AccueilComponent implements AfterViewInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
