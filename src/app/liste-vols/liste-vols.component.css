@@ -1,0 +1,134 @@
+.vol-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.dates-navigation {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  overflow-x: auto; /* Permettre le défilement horizontal */
+  white-space: nowrap;
+  width: 100%;
+}
+
+.vol-options-container {
+  display: flex;
+  gap: 10px; /* Optionnel : espace entre les options */
+  justify-content: center; /* Centre les options horizontalement */
+}
+
+.date-option {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin: 0 5px;
+  background-color: #46696b94;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: normal;
+  font-size: medium;
+  flex: 0 0 auto;
+}
+
+.date-option.selected {
+  background-color: #41aebecc;
+}
+
+.vol-details {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #41aebecc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 80%; /* Augmenter la largeur pour une meilleure visibilité */
+  box-sizing: border-box;
+}
+
+.vol-details h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.vol-details p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.vol-timing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.vol-timing .time {
+  margin: 0 10px;
+}
+
+.vol-timing .icon {
+  color: white;
+  font-size: 24px;
+}
+
+@media (max-width: 600px) {
+  .dates-navigation {
+    flex-direction: row; /* Aligner horizontalement */
+    flex-wrap: nowrap; /* Empêcher le passage à la ligne */
+    overflow-x: auto; /* Activer le défilement horizontal */
+  }
+
+  .date-option {
+    margin: 5px;
+    width: auto; /* Laisser la taille s'ajuster automatiquement */
+  }
+
+  .vol-details,
+  .no-vols {
+    width: auto;
+  }
+
+  .select-button {
+    width: 100%;
+    padding: 10px;
+    font-size: medium;
+  }
+}
+
+.selectable-vol {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  background-color: #3e6870;
+}
+
+.selectable-vol.selected {
+  background-color: #7eadbce3;
+}
+
+
+.btn-primary {
+  background-color: rgb(249, 192, 43);
+  border-color: rgb(249, 192, 43);
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 20px 2px;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: rgb(249, 192, 43);
+  border-color: rgb(249, 192, 43);
+}

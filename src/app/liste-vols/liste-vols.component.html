@@ -1,0 +1,77 @@
+<div class="vol-selection">
+  <h2>Sélectionnez votre vol de départ de {{ departureCityName }} vers {{ destinationCityName }}</h2>
+  <div class="dates-navigation">
+    <div class="vol-options-container">
+      <div *ngIf="parcours.vols.volsAlle && parcours.vols.volsAlle.length > 0; else noVolsMessage">
+        <div class="date-option" 
+             [ngClass]="{'selected': selectedIndices[0] === i}" 
+             *ngFor="let vol of parcours.vols.volsAlle; let i = index" 
+             (click)="handleVolSelection(i)">
+          <div class="selectable-vol">
+            <p>{{ vol.departure.at | date: 'EEEE d MMM' }}</p>
+            <p>{{ vol.price.total }} €</p>
+            <p>{{ vol.numberOfStops === 0 ? 'Vol direct' : vol.numberOfStops === 1 ? '1 escale' : vol.numberOfStops + ' escales' }}</p>
+          </div>
+        </div>
+      </div>
+      <ng-template #noVolsMessage>
+        <p>Pas de vols disponibles pour cette période.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Section pour afficher les détails du vol de départ sélectionné -->
+  <div *ngIf="selectedDepartureVol" class="vol-details">
+    <h3>Détails du vol sélectionné</h3>
+    <div class="vol-timing">
+      <span class="time">{{ selectedDepartureVol.departure.at | date: 'HH:mm' }}</span>
+      <span class="icon"><i class="fas fa-plane"></i></span>
+      <span class="time">{{ selectedDepartureVol.arrival.at | date: 'HH:mm' }}</span>
+    </div>
+    <p>Durée : {{ formatDuration(selectedDepartureVol.duration) }}</p>
+  </div>
+
+  <!-- Section pour le vol de retour s'il y a un retour -->
+  <div *ngIf="tripType === 'round-trip'" class="vol-selection">
+    <h2>Sélectionnez votre vol de retour de {{ destinationCityName }} vers {{ departureCityName }}</h2>
+    <div class="dates-navigation">
+      <div class="vol-options-container">
+        <div *ngIf="parcours.vols.volsRetour && parcours.vols.volsRetour.length > 0; else noReturnVolsMessage">
+          <div class="date-option" 
+               [ngClass]="{'selected': selectedIndices[1] === i}" 
+               *ngFor="let vol of parcours.vols.volsRetour; let i = index" 
+               (click)="handleReturnVolSelection(i)">
+            <div class="selectable-vol">
+              <p>{{ vol.departure.at | date: 'EEEE d MMM' }}</p>
+              <p>{{ vol.price.total }} €</p>
+              <p>{{ vol.numberOfStops === 0 ? 'Vol direct' : vol.numberOfStops === 1 ? '1 escale' : vol.numberOfStops + ' escales' }}</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noReturnVolsMessage>
+          <p>Pas de vols de retour disponibles pour cette période.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Section pour afficher les détails du vol de retour sélectionné -->
+    <div *ngIf="selectedReturnVol" class="vol-details">
+      <h3>Détails du vol de retour sélectionné</h3>
+      <div class="vol-timing">
+        <span class="time">{{ selectedReturnVol.departure.at | date: 'HH:mm' }}</span>
+        <span class="icon"><i class="fas fa-plane"></i></span>
+        <span class="time">{{ selectedReturnVol.arrival.at | date: 'HH:mm' }}</span>
+      </div>
+      <p>Durée : {{ formatDuration(selectedReturnVol.duration) }}</p>
+    </div>
+  </div>
+
+  <!-- Bouton de confirmation de sélection -->
+  <button 
+    class="btn-primary" 
+    (click)="onVolSelected()" 
+    [disabled]="selectedIndices[0] === -1 || (tripType === 'round-trip' && selectedIndices[1] === -1)">
+    Total = {{ calculateTotalPrice() + " €" }}
+  </button>
+
+</div>
