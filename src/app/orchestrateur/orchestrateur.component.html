@@ -1,0 +1,57 @@
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-spinner">
+    <i class="fas fa-spinner fa-spin"></i> Chargement...
+  </div>
+</div>
+
+<div *ngIf="showRemerciement; else parcoursContent">
+  <h2>Merci pour votre réservation !</h2>
+  <p>Nous vous avons envoyé un email de confirmation avec les détails de votre réservation.</p>
+</div>
+
+<ng-template #parcoursContent>
+  <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="1- Réservation" [disabled]="!stepCompleted[0]">
+      <app-form-recherche-vols 
+        *ngIf="stepCompleted[0]"
+        [cities]="cities" 
+        (critereSubmit)="onCritereSubmit($event)">
+      </app-form-recherche-vols>
+    </mat-tab>
+
+    <mat-tab label="2- Choisir le vol" [disabled]="!stepCompleted[1]">
+      <app-liste-vols 
+        *ngIf="stepCompleted[1]"
+        [parcours]="parcours" 
+        (volChoisi)="onVolChoisi($event)">
+      </app-liste-vols>
+    </mat-tab>
+
+    <mat-tab label="3- Détails des vols" [disabled]="!stepCompleted[2]">
+      <app-selected-vols 
+        *ngIf="stepCompleted[2]"
+        [vols]="selectedVols" 
+        [villes]="villes" 
+        (confirmDetails)="onConfirmDetails()">
+      </app-selected-vols>
+    </mat-tab>
+
+    <mat-tab label="4- Information voyageur" [disabled]="!stepCompleted[3]">
+      <app-passager 
+        *ngIf="stepCompleted[3]"
+        [adultsCount]="adultsCount"
+        [childrenCount]="childrenCount"
+        [infantsCount]="infantsCount"
+        (voyageursSubmit)="onVoyageursSubmit($event)">
+      </app-passager>
+    </mat-tab>
+
+    <mat-tab label="5- Paiement" [disabled]="!stepCompleted[4]">
+      <app-payment 
+        *ngIf="stepCompleted[4]"
+        [totalAmount]="totalAmount" 
+        (paymentSubmit)="onPaiementSubmit($event)">
+      </app-payment>
+    </mat-tab>
+  </mat-tab-group>
+</ng-template>
