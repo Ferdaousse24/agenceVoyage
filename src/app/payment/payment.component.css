@@ -1,0 +1,67 @@
+.payment-container {
+  background-color: rgba(255, 255, 255, 0.7); /* Arrière-plan semi-transparent */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333; /* Couleur du texte */
+}
+
+p {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333; /* Couleur du texte */
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333; /* Couleur du texte */
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-row .form-group {
+  width: 48%;
+}
+
+/* Style du bouton adapté à la charte graphique */
+.btn-primary {
+  background-color: rgb(249, 192, 43); /* Couleur de fond jaune */
+  border-color: rgb(249, 192, 43); /* Bordure de la même couleur */
+  color: white; /* Couleur du texte */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 20px;
+  width: 100%; /* Largeur du bouton */
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #e6a700; /* Couleur de fond légèrement plus foncée au survol */
+  border-color: #e6a700; /* Bordure de la même couleur que le fond au survol */
+}

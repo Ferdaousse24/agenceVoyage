@@ -1,0 +1,31 @@
+<div class="payment-container">
+    <h2>Paiement</h2>
+    <p>Montant total à payer : <strong>{{ totalAmount.toFixed(2) }} EUR</strong></p>
+  
+    <form (ngSubmit)="onSubmitPayment()">
+      <div class="form-group">
+        <label for="cardNumber">Numéro de carte bancaire *</label>
+        <input type="text" id="cardNumber" [(ngModel)]="paymentDetails.cardNumber" name="cardNumber" maxlength="16" required />
+      </div>
+  
+      <div class="form-group">
+        <label for="cardHolder">Nom du titulaire *</label>
+        <input type="text" id="cardHolder" [(ngModel)]="paymentDetails.cardHolder" name="cardHolder" required />
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group">
+          <label for="expirationDate">Date d'expiration (MM/AA) *</label>
+          <input type="text" id="expirationDate" [(ngModel)]="paymentDetails.expirationDate" name="expirationDate" maxlength="5" placeholder="MM/AA" required />
+        </div>
+  
+        <div class="form-group">
+          <label for="cvv">CVV *</label>
+          <input type="text" id="cvv" [(ngModel)]="paymentDetails.cvv" name="cvv" maxlength="3" required />
+        </div>
+      </div>
+  
+      <button type="submit" class="btn-primary">Payer {{ totalAmount.toFixed(2) }} EUR</button>
+    </form>
+  </div>
+  
