@@ -1,0 +1,89 @@
+.vol-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.9); /* Couleur de fond semi-transparente */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Augmentation de la taille de l'ombre */
+}
+
+.vol-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.vol-info {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: rgba(249, 192, 43, 0.9); /* Fond jaune similaire aux boutons */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vol-route {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.vol-details p {
+  margin: 5px 0;
+  color: #333; /* Couleur du texte ajustée pour un meilleur contraste */
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.icon {
+  margin-right: 10px;
+  font-size: 22px;
+  color: #ff4757;
+}
+
+.total-summary {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #333; /* Ajustement de la couleur pour un meilleur contraste */
+  text-align: right;
+  width: 100%;
+  font-weight: bold;
+}
+
+.terms {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333; /* Ajustement de la couleur pour un meilleur contraste */
+  display: flex;
+  align-items: center;
+}
+
+.terms input {
+  margin-right: 10px;
+}
+
+.btn-primary {
+  background-color: rgb(249, 192, 43);
+  border-color: rgb(249, 192, 43);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+  text-align: center;
+  display: block;
+  width: fit-content;
+}
+
+.btn-primary:hover {
+  background-color: #e6a700; /* Légèrement plus foncé au survol */
+  border-color: #e6a700;
+}

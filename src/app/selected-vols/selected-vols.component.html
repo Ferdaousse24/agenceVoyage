@@ -1,0 +1,64 @@
+<div class="vol-summary">
+  <h2>Résumé de votre sélection</h2>
+
+  <div *ngFor="let vol of vols" class="vol-container">
+    <!-- Affichage du vol aller -->
+    <div class="vol-info">
+      <div class="vol-route">
+        <span class="icon">
+          <i class="fas fa-plane-departure"></i>
+        </span>
+        <span>{{ getCityName(vol.aller.departure.iataCode) }} - {{ getCityName(vol.aller.arrival.iataCode) }}</span>
+      </div>
+      <div class="vol-details">
+        <p>
+          <strong>Compagnie :</strong> {{ vol.aller.carrierCode }} {{ vol.aller.number }} | 
+          <strong>Départ :</strong> {{ vol.aller.departure.at | date: 'EEEE d MMMM yyyy à HH:mm' }} | 
+          <strong>Arrivée :</strong> {{ vol.aller.arrival.at | date: 'EEEE d MMMM yyyy à HH:mm' }} | 
+          <strong>Durée :</strong> {{ formatDuration(vol.aller.duration) }}
+        </p>
+        <p>
+          <strong>Prix pour adulte(s) :</strong> {{ calculatePriceAndCount(vol.aller.travelers, 'ADULT') }} | 
+          <strong>Prix pour enfant(s) :</strong> {{ calculatePriceAndCount(vol.aller.travelers, 'CHILD') }} | 
+          <strong>Prix pour bébé(s) :</strong> {{ calculatePriceAndCount(vol.aller.travelers, 'HELD_INFANT') }} | 
+          <strong>Prix Total :</strong> {{ vol.aller.price.total }} EUR
+        </p>
+      </div>
+    </div>
+
+    <!-- Affichage du vol retour, s'il y a un retour -->
+    <div *ngIf="vol.retour" class="vol-info">
+      <div class="vol-route">
+        <span class="icon">
+          <i class="fas fa-plane-arrival"></i>
+        </span>
+        <span>{{ getCityName(vol.retour.departure.iataCode) }} - {{ getCityName(vol.retour.arrival.iataCode) }}</span>
+      </div>
+      <div class="vol-details">
+        <p>
+          <strong>Compagnie :</strong> {{ vol.retour.carrierCode }} {{ vol.retour.number }} | 
+          <strong>Départ :</strong> {{ vol.retour.departure.at | date: 'EEEE d MMMM yyyy à HH:mm' }} | 
+          <strong>Arrivée :</strong> {{ vol.retour.arrival.at | date: 'EEEE d MMMM yyyy à HH:mm' }} | 
+          <strong>Durée :</strong> {{ formatDuration(vol.retour.duration) }}
+        </p>
+        <p>
+          <strong>Prix pour adulte(s) :</strong> {{ calculatePriceAndCount(vol.retour.travelers, 'ADULT') }} | 
+          <strong>Prix pour enfant(s) :</strong> {{ calculatePriceAndCount(vol.retour.travelers, 'CHILD') }} | 
+          <strong>Prix pour bébé(s) :</strong> {{ calculatePriceAndCount(vol.retour.travelers, 'HELD_INFANT') }} | 
+          <strong>Prix Total :</strong> {{ vol.retour.price.total }} EUR
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="total-summary">
+    <p>Somme totale : <strong>{{ calculateTotalPrice() }} EUR</strong></p>
+  </div>
+
+  <div class="terms">
+    <input type="checkbox" id="terms" (change)="toggleTermsAccepted()">
+    <label for="terms">En cochant cette case vous acceptez les Conditions et politique de confidentialité</label>
+  </div>
+
+  <button class="btn-primary" (click)="onContinue()" [disabled]="!termsAccepted">Continuer vers les infos du passager</button>
+</div>
