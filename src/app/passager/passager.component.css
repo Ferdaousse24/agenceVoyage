@@ -1,0 +1,136 @@
+.passager-container {
+  display: flex;
+  flex-direction: row;
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.passager-list {
+  width: 20%;
+  margin-right: 20px;
+}
+
+.passager-item {
+  background-color: rgb(249, 192, 43); /* Arrière-plan jaune comme le bouton */
+  color: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.passager-item.selected {
+  background-color: #e6a700; /* Couleur légèrement plus foncée pour l'élément sélectionné */
+  color: white;
+}
+
+.passager-form {
+  width: 80%;
+  background-color: rgba(255, 255, 255, 0.7); /* Arrière-plan semi-transparent */
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.passager-form h2 {
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1;
+  margin: 0 10px;
+  margin-bottom: 15px;
+  min-width: 250px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: rgb(249, 192, 43); /* Couleur de fond jaune */
+  border-color: rgb(249, 192, 43); /* Bordure de la même couleur */
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+  text-align: center;
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-primary:hover {
+  background-color: #e6a700; /* Couleur légèrement plus foncée au survol */
+  border-color: #e6a700;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+
+.autocomplete-list {
+  background: rgb(57, 106, 108);
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.autocomplete-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.autocomplete-list li:hover {
+  background-color: rgb(57, 106, 108);
+}
+
+@media (max-width: 767.98px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-group {
+    width: 100%;
+    margin: 0 0 15px 0;
+  }
+}

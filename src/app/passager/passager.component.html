@@ -1,0 +1,67 @@
+<div class="passager-container">
+  <div class="passager-list">
+    <div *ngFor="let form of voyageursFormGroups; let i = index" 
+         class="passager-item" 
+         [ngClass]="{'selected': selectedVoyageurIndex === i}" 
+         (click)="selectVoyageur(i)">
+      {{ form.value.type }} {{ i + 1 }}
+    </div>
+  </div>
+  
+  <div class="passager-form">
+    <h2>Informations {{ voyageursFormGroups[selectedVoyageurIndex].value.type }} {{ selectedVoyageurIndex + 1 }}</h2>
+    
+    <form [formGroup]="voyageursFormGroups[selectedVoyageurIndex]" (ngSubmit)="onNext()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="titre">Titre *</label>
+          <select id="titre" formControlName="titre" required>
+            <option value="Mr">Mr</option>
+            <option value="Mrs">Mrs</option>
+            <option value="Ms">Ms</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="prenom">Prénom *</label>
+          <input type="text" id="prenom" formControlName="prenom" required />
+        </div>
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input type="text" id="nom" formControlName="nom" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nationalite">Nationalité *</label>
+          <input type="text" id="nationalite" formControlName="nationalite" required />
+        </div>
+        <div class="form-group">
+          <label for="dateNaissance">Date de naissance *</label>
+          <input type="date" id="dateNaissance" formControlName="dateNaissance" required />
+        </div>
+        <div class="form-group">
+          <label for="numeroPasseport">Numéro de passeport *</label>
+          <input type="text" id="numeroPasseport" formControlName="numeroPasseport" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="telephone">Numéro de téléphone *</label>
+          <input type="tel" id="telephone" formControlName="telephone" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" formControlName="email" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <button type="submit" class="btn-primary">
+          {{ selectedVoyageurIndex < voyageursFormGroups.length - 1 ? 'Suivant' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
