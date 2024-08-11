@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
+import { Observable } from 'rxjs';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -43,5 +45,26 @@ export class AirtableService {
       console.error('Error finding record by email in Airtable:', error);
       throw error;
     }
+  }
+
+   getCities(): Observable<any[]> {
+    return new Observable<any[]>(observer => {
+      axios.get(`${this.apiUrl}/Cities`, {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`
+        }
+      })
+      .then(response => {
+        const cities = response.data.records.map((record: any) => ({
+          code: record.fields.code,
+          name: record.fields.name
+        }));
+        observer.next(cities);
+        observer.complete();
+      })
+      .catch(error => {
+        observer.error(error);
+      });
+    });
   }
 }
