@@ -1,0 +1,176 @@
+<div class="search-form">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="departure">Depuis</label>
+      <mat-form-field>
+        <input
+          type="text"
+          placeholder="Search"
+          matInput
+          [formControl]="departureControl"
+          [matAutocomplete]="autoDeparture"
+          name="departureCity"
+          aria-label="Departure city"
+          required
+        />
+        <mat-autocomplete #autoDeparture="matAutocomplete" (optionSelected)="onDepartureSelected($event)">
+          <mat-option *ngFor="let city of filteredOptions | async" [value]="city.name">
+            {{ city.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div *ngIf="departureControl.invalid && departureControl.touched" class="error-message">
+        Veuillez sélectionner une ville de départ valide.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="destination">Vers</label>
+      <mat-form-field>
+        <input
+          type="text"
+          placeholder="Search"
+          matInput
+          [formControl]="destinationControl"
+          [matAutocomplete]="autoDestination"
+          name="destinationCity"
+          aria-label="Destination city"
+          required
+        />
+        <mat-autocomplete #autoDestination="matAutocomplete">
+          <mat-option *ngFor="let city of filteredDestinationOptions | async" [value]="city.name">
+            {{ city.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div *ngIf="destinationControl.invalid && destinationControl.touched" class="error-message">
+        Veuillez sélectionner une ville de destination valide.
+      </div>
+    </div>
+
+    <div class="form-group trip-type">
+      <label>
+        <input
+          type="radio"
+          [formControl]="tripTypeControl"
+          value="one-way"
+          (change)="onTripTypeChange()"
+          aria-label="One-way trip"
+          required
+        />
+        Aller simple
+      </label>
+      <label>
+        <input
+          type="radio"
+          [formControl]="tripTypeControl"
+          value="round-trip"
+          (change)="onTripTypeChange()"
+          aria-label="Round-trip"
+          required
+        />
+        Aller-Retour
+      </label>
+    </div>
+  </div>
+
+  <div *ngIf="showAdditionalFields">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="departureDate">Date de départ *</label>
+        <input
+          type="date"
+          id="departureDate"
+          class="form-control"
+          [formControl]="departureDateControl"
+          name="departureDate"
+          [min]="today"
+          (change)="onDepartureDateChange()"
+          aria-required="true"
+          aria-label="Departure date"
+          required
+        />
+        <div *ngIf="departureDateControl.invalid && departureDateControl.touched" class="error-message">
+          Veuillez sélectionner une date de départ valide.
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="tripTypeControl.value === 'round-trip'">
+        <label for="returnDate">Date de retour *</label>
+        <input
+          type="date"
+          id="returnDate"
+          class="form-control"
+          [formControl]="returnDateControl"
+          name="returnDate"
+          [min]="departureDateControl.value"
+          (change)="onReturnDateChange()"
+          aria-required="true"
+          aria-label="Return date"
+          required
+        />
+        <div *ngIf="returnDateControl.invalid && returnDateControl.touched" class="error-message">
+          Veuillez sélectionner une date de retour valide.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="adults">Nombre d'adultes *</label>
+        <input
+          type="number"
+          id="adults"
+          class="form-control"
+          [formControl]="adultsControl"
+          name="adults"
+          min="1"
+          aria-required="true"
+          aria-label="Number of adults"
+          required
+        />
+        <div *ngIf="adultsControl.invalid && adultsControl.touched" class="error-message">
+          Veuillez sélectionner au moins un adulte.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="children">Nombre d'enfants</label>
+        <input
+          type="number"
+          id="children"
+          class="form-control"
+          [formControl]="childrenControl"
+          name="children"
+          min="0"
+          aria-label="Number of children"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="infants">Nombre de bébés (&lt; 2 ans)</label>
+        <input
+          type="number"
+          id="infants"
+          class="form-control"
+          [formControl]="infantsControl"
+          name="infants"
+          min="0"
+          aria-label="Number of infants"
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <button type="button" class="btn btn-secondary reduce-btn" (click)="toggleFields()">
+        <i [class]="showAdditionalFields ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+        {{ showAdditionalFields ? 'Réduire' : 'Afficher Plus' }}
+      </button>
+      <button class="btn btn-primary" 
+        (click)="onContinue()"
+        [disabled]="departureControl.invalid || destinationControl.invalid || departureDateControl.invalid || (tripTypeControl.value === 'round-trip' && returnDateControl.invalid)">
+        Rechercher vols
+      </button>
+    </div>
+  </div>
+</div>
