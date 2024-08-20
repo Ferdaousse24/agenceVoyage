@@ -225,3 +225,14 @@ mat-form-field {
 ::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
   color: white !important;
 }
+
+.error-message {
+  background-color: #f44336; /* Rouge vif pour le fond */
+  color: #ffffff;            /* Blanc pour le texte */
+  padding: 15px;             /* Espacement intérieur pour le cadre */
+  margin: 15px 0;            /* Espacement extérieur pour séparer du contenu environnant */
+  border-radius: 5px;        /* Coins arrondis */
+  border: 1px solid #d32f2f; /* Bordure rouge plus foncée */
+  font-size: 16px;           /* Taille de police confortable */
+  text-align: center;        /* Centrer le texte */
+}

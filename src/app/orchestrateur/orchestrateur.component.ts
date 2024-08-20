@@ -55,6 +55,7 @@ export class OrchestrateurComponent implements OnInit {
   adultsCount: number = 0;
   childrenCount: number = 0;
   infantsCount: number = 0;
+  errorMessage: string = '';
 
   constructor(
     private amadeusService: AmadeusService, 
@@ -77,21 +78,41 @@ export class OrchestrateurComponent implements OnInit {
 
   onCritereSubmit(critere: any) {
     this.isLoading = true;
+    this.errorMessage = ''; // Réinitialiser le message d'erreur
     this.parcours.critere = critere;
+  
     this.amadeusService.rechercherVolsAvecCritere(critere).then(vols => {
       this.parcours.vols = vols;
       this.stepCompleted[1] = true;
       this.isLoading = false;
       this.selectedIndex = 1; // Passer à l'étape de sélection des vols
-
-      // Set the passenger counts based on the submitted criteria
+  
+      // Définir le nombre de passagers en fonction des critères soumis
       this.adultsCount = critere.adults || 0;
       this.childrenCount = critere.children || 0;
       this.infantsCount = critere.infants || 0;
     }).catch(error => {
+      this.isLoading = false; // Arrêter le chargement
+  
+      // Vérification du code d'erreur et personnalisation du message
+      const statusCode = error.response?.status; // Utilisation de error.response.status
+  
+      if (statusCode === 500) {
+        this.errorMessage = 'Une erreur interne du serveur s\'est produite. Veuillez réessayer plus tard.';
+      } else if (statusCode === 429) {
+        this.errorMessage = 'Trop de demandes ont été faites en peu de temps. Veuillez attendre un moment et réessayer.';
+      } else if (statusCode === 404) {
+        this.errorMessage = 'Aucun vol trouvé pour les critères spécifiés. Veuillez modifier vos critères et réessayer.';
+      } else if (statusCode === 400) {
+        this.errorMessage = 'Requête invalide. Veuillez vérifier les informations fournies et réessayer.';
+      } else {
+        this.errorMessage = 'Une erreur est survenue lors de la recherche des vols. Veuillez réessayer.';
+      }
+  
       console.error('Erreur lors de la recherche des vols', error);
     });
   }
+    
 
   onVolChoisi(volIndices: number[]) {
     const allerIndex = volIndices[0];
